@@ -5,6 +5,19 @@ import { checkPermission } from "@/lib/auth"
 
 export const runtime = "edge"
 
+interface SiteConfigRequest {
+  defaultRole: Exclude<Role, typeof ROLES.EMPEROR>
+  emailDomains: string
+  adminContact: string
+  maxEmails: string
+  turnstile?: {
+    enabled: boolean
+    siteKey: string
+    secretKey?: string
+    preserveExistingSecretKey?: boolean
+  }
+}
+
 export async function GET() {
   const env = getRequestContext().env
   const canManageConfig = await checkPermission(PERMISSIONS.MANAGE_CONFIG)
@@ -35,7 +48,7 @@ export async function GET() {
     turnstile: canManageConfig ? {
       enabled: turnstileEnabled === "true",
       siteKey: turnstileSiteKey || "",
-      secretKey: turnstileSecretKey || "",
+      secretKeyConfigured: Boolean(turnstileSecretKey),
     } : undefined
   })
 }
@@ -55,17 +68,7 @@ export async function POST(request: Request) {
     adminContact,
     maxEmails,
     turnstile
-  } = await request.json() as { 
-    defaultRole: Exclude<Role, typeof ROLES.EMPEROR>,
-    emailDomains: string,
-    adminContact: string,
-    maxEmails: string,
-    turnstile?: {
-      enabled: boolean,
-      siteKey: string,
-      secretKey: string
-    }
-  }
+  } = await request.json() as SiteConfigRequest
   
   if (![ROLES.DUKE, ROLES.KNIGHT, ROLES.CIVILIAN].includes(defaultRole)) {
     return Response.json({ error: "无效的角色" }, { status: 400 })
@@ -74,14 +77,20 @@ export async function POST(request: Request) {
   const turnstileConfig = turnstile ?? {
     enabled: false,
     siteKey: "",
-    secretKey: ""
-  }
-
-  if (turnstileConfig.enabled && (!turnstileConfig.siteKey || !turnstileConfig.secretKey)) {
-    return Response.json({ error: "Turnstile 启用时需要提供 Site Key 和 Secret Key" }, { status: 400 })
+    secretKey: "",
+    preserveExistingSecretKey: false,
   }
 
   const env = getRequestContext().env
+  const existingTurnstileSecretKey = await env.SITE_CONFIG.get("TURNSTILE_SECRET_KEY")
+  const nextTurnstileSecretKey = turnstileConfig.preserveExistingSecretKey
+    ? (existingTurnstileSecretKey || "")
+    : (turnstileConfig.secretKey || "")
+
+  if (turnstileConfig.enabled && (!turnstileConfig.siteKey || !nextTurnstileSecretKey)) {
+    return Response.json({ error: "Turnstile 启用时需要提供 Site Key 和 Secret Key" }, { status: 400 })
+  }
+
   await Promise.all([
     env.SITE_CONFIG.put("DEFAULT_ROLE", defaultRole),
     env.SITE_CONFIG.put("EMAIL_DOMAINS", emailDomains),
@@ -89,7 +98,7 @@ export async function POST(request: Request) {
     env.SITE_CONFIG.put("MAX_EMAILS", maxEmails),
     env.SITE_CONFIG.put("TURNSTILE_ENABLED", turnstileConfig.enabled.toString()),
     env.SITE_CONFIG.put("TURNSTILE_SITE_KEY", turnstileConfig.siteKey),
-    env.SITE_CONFIG.put("TURNSTILE_SECRET_KEY", turnstileConfig.secretKey)
+    env.SITE_CONFIG.put("TURNSTILE_SECRET_KEY", nextTurnstileSecretKey)
   ])
 
   return Response.json({ success: true })

@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 interface EmailServiceConfig {
   enabled: boolean
   apiKey: string
+  apiKeyConfigured?: boolean
   roleLimits: {
     duke: number
     knight: number
@@ -33,6 +34,7 @@ export function EmailServiceConfig() {
   })
   const [loading, setLoading] = useState(false)
   const [showToken, setShowToken] = useState(false)
+  const [apiKeyDirty, setApiKeyDirty] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -44,7 +46,13 @@ export function EmailServiceConfig() {
       const res = await fetch("/api/config/email-service")
       if (res.ok) {
         const data = await res.json() as EmailServiceConfig
-        setConfig(data)
+        setConfig({
+          enabled: data.enabled,
+          apiKey: "",
+          apiKeyConfigured: Boolean(data.apiKeyConfigured),
+          roleLimits: data.roleLimits,
+        })
+        setApiKeyDirty(false)
       }
     } catch (error) {
       console.error("Failed to fetch email service config:", error)
@@ -56,7 +64,8 @@ export function EmailServiceConfig() {
     try {
       const saveData = {
         enabled: config.enabled,
-        apiKey: config.apiKey,
+        apiKey: apiKeyDirty ? config.apiKey : undefined,
+        preserveExistingApiKey: !apiKeyDirty,
         roleLimits: config.roleLimits
       }
 
@@ -123,8 +132,11 @@ export function EmailServiceConfig() {
                   id="apiKey"
                   type={showToken ? "text" : "password"}
                   value={config.apiKey}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfig((prev: EmailServiceConfig) => ({ ...prev, apiKey: e.target.value }))}
-                  placeholder={t("apiKeyPlaceholder")}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setApiKeyDirty(true)
+                    setConfig((prev: EmailServiceConfig) => ({ ...prev, apiKey: e.target.value }))
+                  }}
+                  placeholder={config.apiKeyConfigured ? "••••••••" : t("apiKeyPlaceholder")}
                 />
                 <Button
                   type="button"

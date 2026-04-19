@@ -16,7 +16,46 @@ export interface WebhookPayload {
   data: EmailMessage
 }
 
+const DISALLOWED_WEBHOOK_HOSTS = new Set([
+  "localhost",
+  "127.0.0.1",
+  "0.0.0.0",
+  "::1",
+])
+
+export function validateWebhookUrl(rawUrl: string): string {
+  const parsed = new URL(rawUrl)
+
+  if (!["https:", "http:"].includes(parsed.protocol)) {
+    throw new Error("Webhook URL must use HTTP or HTTPS")
+  }
+
+  const hostname = parsed.hostname.toLowerCase()
+  const normalizedHostname = hostname.replace(/^\[|\]$/g, "")
+
+  if (
+    DISALLOWED_WEBHOOK_HOSTS.has(normalizedHostname) ||
+    normalizedHostname.endsWith(".local") ||
+    normalizedHostname.endsWith(".internal")
+  ) {
+    throw new Error("Webhook URL points to a disallowed host")
+  }
+
+  if (
+    /^10\./.test(normalizedHostname) ||
+    /^127\./.test(normalizedHostname) ||
+    /^169\.254\./.test(normalizedHostname) ||
+    /^172\.(1[6-9]|2\d|3[0-1])\./.test(normalizedHostname) ||
+    /^192\.168\./.test(normalizedHostname)
+  ) {
+    throw new Error("Webhook URL points to a private network")
+  }
+
+  return parsed.toString()
+}
+
 export async function callWebhook(url: string, payload: WebhookPayload) {
+  const validatedUrl = validateWebhookUrl(url)
   let lastError: Error | null = null
   
   for (let i = 0; i < WEBHOOK_CONFIG.MAX_RETRIES; i++) {
@@ -24,7 +63,7 @@ export async function callWebhook(url: string, payload: WebhookPayload) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_CONFIG.TIMEOUT)
 
-      const response = await fetch(url, {
+      const response = await fetch(validatedUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

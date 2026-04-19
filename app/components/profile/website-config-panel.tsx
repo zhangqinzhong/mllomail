@@ -49,7 +49,7 @@ export function WebsiteConfigPanel() {
         turnstile?: {
           enabled: boolean,
           siteKey: string,
-          secretKey?: string
+          secretKeyConfigured?: boolean
         }
       }
       setDefaultRole(data.defaultRole)
@@ -58,7 +58,7 @@ export function WebsiteConfigPanel() {
       setMaxEmails(data.maxEmails || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString())
       setTurnstileEnabled(Boolean(data.turnstile?.enabled))
       setTurnstileSiteKey(data.turnstile?.siteKey ?? "")
-      setTurnstileSecretKey(data.turnstile?.secretKey ?? "")
+      setTurnstileSecretKey("")
     }
   }
 
@@ -76,7 +76,8 @@ export function WebsiteConfigPanel() {
           turnstile: {
             enabled: turnstileEnabled,
             siteKey: turnstileSiteKey,
-            secretKey: turnstileSecretKey
+            secretKey: turnstileSecretKey || undefined,
+            preserveExistingSecretKey: turnstileSecretKey.length === 0
           }
         }),
       })

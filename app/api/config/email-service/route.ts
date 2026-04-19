@@ -8,7 +8,8 @@ export const runtime = "edge"
 
 interface EmailServiceConfig {
   enabled: boolean
-  apiKey: string
+  apiKey?: string
+  preserveExistingApiKey?: boolean
   roleLimits: {
     duke?: number
     knight?: number
@@ -41,7 +42,7 @@ export async function GET() {
 
     return NextResponse.json({
       enabled: enabled === "true",
-      apiKey: apiKey || "",
+      apiKeyConfigured: Boolean(apiKey),
       roleLimits: finalLimits
     })
   } catch (error) {
@@ -64,15 +65,16 @@ export async function POST(request: Request) {
 
   try {
     const config = await request.json() as EmailServiceConfig
+    const env = getRequestContext().env
+    const existingApiKey = await env.SITE_CONFIG.get("RESEND_API_KEY")
+    const nextApiKey = config.preserveExistingApiKey ? (existingApiKey || "") : (config.apiKey || "")
 
-    if (config.enabled && !config.apiKey) {
+    if (config.enabled && !nextApiKey) {
       return NextResponse.json(
         { error: "启用 Resend 时，API Key 为必填项" },
         { status: 400 }
       )
     }
-
-    const env = getRequestContext().env
     
     const customLimits: { duke?: number; knight?: number } = {}
     if (config.roleLimits?.duke !== undefined) {
@@ -84,7 +86,7 @@ export async function POST(request: Request) {
 
     await Promise.all([
       env.SITE_CONFIG.put("EMAIL_SERVICE_ENABLED", config.enabled.toString()),
-      env.SITE_CONFIG.put("RESEND_API_KEY", config.apiKey),
+      env.SITE_CONFIG.put("RESEND_API_KEY", nextApiKey),
       env.SITE_CONFIG.put("EMAIL_ROLE_LIMITS", JSON.stringify(customLimits))
     ])
 

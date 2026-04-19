@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { createDb } from "@/lib/db"
 import { webhooks } from "@/lib/schema"
+import { validateWebhookUrl } from "@/lib/webhook"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { url, enabled } = webhookSchema.parse(body)
+    const validatedUrl = validateWebhookUrl(url)
     
     const db = createDb()
     const now = new Date()
@@ -43,7 +45,7 @@ export async function POST(request: Request) {
       await db
         .update(webhooks)
         .set({
-          url,
+          url: validatedUrl,
           enabled,
           updatedAt: now
         })
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
         .insert(webhooks)
         .values({
           userId: session.user.id,
-          url,
+          url: validatedUrl,
           enabled,
         })
     }

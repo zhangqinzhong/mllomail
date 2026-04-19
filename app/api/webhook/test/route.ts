@@ -1,4 +1,5 @@
 import { callWebhook } from "@/lib/webhook"
+import { auth } from "@/lib/auth"
 import { WEBHOOK_CONFIG } from "@/config"
 import { z } from "zod"
 import { EmailMessage } from "@/lib/webhook"
@@ -11,6 +12,11 @@ const testSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const body = await request.json()
     const { url } = testSchema.parse(body)
 
