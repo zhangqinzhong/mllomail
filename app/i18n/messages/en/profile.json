@@ -119,7 +119,16 @@
     "save": "Save Configuration",
     "saving": "Saving...",
     "saveSuccess": "Configuration saved successfully",
-    "saveFailed": "Failed to save configuration"
+    "saveFailed": "Failed to save configuration",
+    "sourceLink": {
+      "enable": "Show Source Link Button",
+      "enableDescription": "Show a configurable floating button in the lower-right corner",
+      "url": "Source Link URL",
+      "urlPlaceholder": "https://your-repository.example",
+      "label": "Button Label",
+      "labelPlaceholder": "Source code",
+      "defaultLabel": "Source code"
+    }
   },
   "promote": {
     "title": "Role Management",

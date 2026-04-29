@@ -45,7 +45,7 @@ export async function generateMetadata({
   const locale = localeFromParams as Locale
   const t = await getTranslations({ locale, namespace: "metadata" })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://moemail.app"
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
   
   // Generate hreflang links for all supported locales
   const languages: Record<string, string> = {}
@@ -144,4 +144,3 @@ export default async function LocaleLayout({
     </html>
   )
 }
-

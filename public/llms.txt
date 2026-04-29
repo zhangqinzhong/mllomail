@@ -8,7 +8,7 @@ MoeMail provides disposable email addresses. Install the CLI for programmatic ac
 
 Install: npm i -g @moemail/cli
 
-Setup: moemail config set api-url https://moemail.app && moemail config set api-key YOUR_KEY
+Setup: moemail config set api-url https://your-domain.example && moemail config set api-key YOUR_KEY
 
 Commands:
 - moemail create --domain <domain> --expiry <1h|24h|3d|permanent> --json

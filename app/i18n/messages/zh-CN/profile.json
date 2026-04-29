@@ -119,7 +119,16 @@
     "save": "保存配置",
     "saving": "保存中...",
     "saveSuccess": "配置保存成功",
-    "saveFailed": "保存配置失败"
+    "saveFailed": "保存配置失败",
+    "sourceLink": {
+      "enable": "显示源码链接按钮",
+      "enableDescription": "在页面右下角显示一个可配置的悬浮按钮",
+      "url": "源码链接地址",
+      "urlPlaceholder": "https://your-repository.example",
+      "label": "按钮文案",
+      "labelPlaceholder": "源代码",
+      "defaultLabel": "源代码"
+    }
   },
   "promote": {
     "title": "角色管理",

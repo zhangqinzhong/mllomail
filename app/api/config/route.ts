@@ -10,6 +10,11 @@ interface SiteConfigRequest {
   emailDomains: string
   adminContact: string
   maxEmails: string
+  sourceLink?: {
+    enabled: boolean
+    url: string
+    label: string
+  }
   turnstile?: {
     enabled: boolean
     siteKey: string
@@ -29,7 +34,10 @@ export async function GET() {
     maxEmails,
     turnstileEnabled,
     turnstileSiteKey,
-    turnstileSecretKey
+    turnstileSecretKey,
+    sourceLinkEnabled,
+    sourceLinkUrl,
+    sourceLinkLabel
   ] = await Promise.all([
     env.SITE_CONFIG.get("DEFAULT_ROLE"),
     env.SITE_CONFIG.get("EMAIL_DOMAINS"),
@@ -37,19 +45,27 @@ export async function GET() {
     env.SITE_CONFIG.get("MAX_EMAILS"),
     env.SITE_CONFIG.get("TURNSTILE_ENABLED"),
     env.SITE_CONFIG.get("TURNSTILE_SITE_KEY"),
-    env.SITE_CONFIG.get("TURNSTILE_SECRET_KEY")
+    env.SITE_CONFIG.get("TURNSTILE_SECRET_KEY"),
+    env.SITE_CONFIG.get("SOURCE_LINK_ENABLED"),
+    env.SITE_CONFIG.get("SOURCE_LINK_URL"),
+    env.SITE_CONFIG.get("SOURCE_LINK_LABEL")
   ])
 
   return Response.json({
     defaultRole: defaultRole || ROLES.CIVILIAN,
-    emailDomains: emailDomains || "moemail.app",
+    emailDomains: emailDomains || "example.com",
     adminContact: adminContact || "",
     maxEmails: maxEmails || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString(),
     turnstile: canManageConfig ? {
       enabled: turnstileEnabled === "true",
       siteKey: turnstileSiteKey || "",
       secretKeyConfigured: Boolean(turnstileSecretKey),
-    } : undefined
+    } : undefined,
+    sourceLink: {
+      enabled: sourceLinkEnabled === "true",
+      url: sourceLinkUrl || "",
+      label: sourceLinkLabel || "Source code",
+    }
   })
 }
 
@@ -67,6 +83,7 @@ export async function POST(request: Request) {
     emailDomains,
     adminContact,
     maxEmails,
+    sourceLink,
     turnstile
   } = await request.json() as SiteConfigRequest
   
@@ -96,6 +113,9 @@ export async function POST(request: Request) {
     env.SITE_CONFIG.put("EMAIL_DOMAINS", emailDomains),
     env.SITE_CONFIG.put("ADMIN_CONTACT", adminContact),
     env.SITE_CONFIG.put("MAX_EMAILS", maxEmails),
+    env.SITE_CONFIG.put("SOURCE_LINK_ENABLED", Boolean(sourceLink?.enabled).toString()),
+    env.SITE_CONFIG.put("SOURCE_LINK_URL", sourceLink?.url || ""),
+    env.SITE_CONFIG.put("SOURCE_LINK_LABEL", sourceLink?.label || "Source code"),
     env.SITE_CONFIG.put("TURNSTILE_ENABLED", turnstileConfig.enabled.toString()),
     env.SITE_CONFIG.put("TURNSTILE_SITE_KEY", turnstileConfig.siteKey),
     env.SITE_CONFIG.put("TURNSTILE_SECRET_KEY", nextTurnstileSecretKey)

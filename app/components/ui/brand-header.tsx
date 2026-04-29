@@ -25,7 +25,7 @@ export function BrandHeader({
     <div className="text-center space-y-4 lg:pb-4">
       <div className="flex justify-center pt-2">
         <Link
-          href="https://moemail.app"
+          href="/"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
         >
           <div className="relative w-12 h-12">

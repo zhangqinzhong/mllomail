@@ -26,6 +26,9 @@ export function WebsiteConfigPanel() {
   const [emailDomains, setEmailDomains] = useState<string>("")
   const [adminContact, setAdminContact] = useState<string>("")
   const [maxEmails, setMaxEmails] = useState<string>(EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString())
+  const [sourceLinkEnabled, setSourceLinkEnabled] = useState(false)
+  const [sourceLinkUrl, setSourceLinkUrl] = useState("")
+  const [sourceLinkLabel, setSourceLinkLabel] = useState("")
   const [turnstileEnabled, setTurnstileEnabled] = useState(false)
   const [turnstileSiteKey, setTurnstileSiteKey] = useState("")
   const [turnstileSecretKey, setTurnstileSecretKey] = useState("")
@@ -46,6 +49,11 @@ export function WebsiteConfigPanel() {
         emailDomains: string,
         adminContact: string,
         maxEmails: string,
+        sourceLink?: {
+          enabled: boolean,
+          url: string,
+          label: string
+        },
         turnstile?: {
           enabled: boolean,
           siteKey: string,
@@ -56,6 +64,9 @@ export function WebsiteConfigPanel() {
       setEmailDomains(data.emailDomains)
       setAdminContact(data.adminContact)
       setMaxEmails(data.maxEmails || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString())
+      setSourceLinkEnabled(Boolean(data.sourceLink?.enabled))
+      setSourceLinkUrl(data.sourceLink?.url ?? "")
+      setSourceLinkLabel(data.sourceLink?.label ?? "")
       setTurnstileEnabled(Boolean(data.turnstile?.enabled))
       setTurnstileSiteKey(data.turnstile?.siteKey ?? "")
       setTurnstileSecretKey("")
@@ -73,6 +84,11 @@ export function WebsiteConfigPanel() {
           emailDomains,
           adminContact,
           maxEmails: maxEmails || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString(),
+          sourceLink: {
+            enabled: sourceLinkEnabled,
+            url: sourceLinkUrl,
+            label: sourceLinkLabel || t("sourceLink.defaultLabel")
+          },
           turnstile: {
             enabled: turnstileEnabled,
             siteKey: turnstileSiteKey,
@@ -153,6 +169,49 @@ export function WebsiteConfigPanel() {
               value={maxEmails}
               onChange={(e) => setMaxEmails(e.target.value)}
               placeholder={`${EMAIL_CONFIG.MAX_ACTIVE_EMAILS}`}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 rounded-lg border border-dashed border-primary/40 p-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label htmlFor="source-link-enabled" className="text-sm font-medium">
+                {t("sourceLink.enable")}
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {t("sourceLink.enableDescription")}
+              </p>
+            </div>
+            <Switch
+              id="source-link-enabled"
+              checked={sourceLinkEnabled}
+              onCheckedChange={setSourceLinkEnabled}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="source-link-url" className="text-sm font-medium">
+              {t("sourceLink.url")}
+            </Label>
+            <Input
+              id="source-link-url"
+              type="url"
+              value={sourceLinkUrl}
+              onChange={(e) => setSourceLinkUrl(e.target.value)}
+              placeholder={t("sourceLink.urlPlaceholder")}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="source-link-label" className="text-sm font-medium">
+              {t("sourceLink.label")}
+            </Label>
+            <Input
+              id="source-link-label"
+              value={sourceLinkLabel}
+              onChange={(e) => setSourceLinkLabel(e.target.value)}
+              placeholder={t("sourceLink.labelPlaceholder")}
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -11,12 +11,43 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+interface SourceLinkConfig {
+  enabled: boolean
+  url: string
+  label: string
+}
+
 export function FloatMenu() {
-  const t = useTranslations("common")
   const pathname = usePathname()
+  const [sourceLink, setSourceLink] = useState<SourceLinkConfig | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function fetchConfig() {
+      try {
+        const res = await fetch("/api/config")
+        if (!res.ok) return
+
+        const data = await res.json() as { sourceLink?: SourceLinkConfig }
+        if (!cancelled) {
+          setSourceLink(data.sourceLink ?? null)
+        }
+      } catch {
+        if (!cancelled) {
+          setSourceLink(null)
+        }
+      }
+    }
+
+    fetchConfig()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
   
-  // 在分享页面隐藏GitHub悬浮框
-  if (pathname.includes("/shared/")) {
+  if (pathname.includes("/shared/") || !sourceLink?.enabled || !sourceLink.url) {
     return null
   }
   
@@ -29,21 +60,21 @@ export function FloatMenu() {
               variant="outline"
               size="icon"
               className="bg-white dark:bg-background rounded-full shadow-lg group relative border-primary/20"
-              onClick={() => window.open("https://github.com/beilunyang/moemail", "_blank")}
+              onClick={() => window.open(sourceLink.url, "_blank", "noopener,noreferrer")}
             >
               <Github 
                 className="w-4 h-4 transition-all duration-300 text-primary group-hover:scale-110"
               />
-              <span className="sr-only">{t("github")}</span>
+              <span className="sr-only">{sourceLink.label}</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
             <div className="text-sm">
-              <p>{t("github")}</p>
+              <p>{sourceLink.label}</p>
             </div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
   )
-} 
+}

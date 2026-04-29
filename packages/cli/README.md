@@ -12,7 +12,8 @@ npm i -g @moemail/cli
 
 ### 1. Configure default domain
 ```bash
-moemail config --domain moemail.app
+moemail config set api-url https://your-domain.example
+moemail config set api-key YOUR_API_KEY
 ```
 
 ### 2. Create a temporary email
@@ -44,7 +45,7 @@ The CLI is designed to support agent-first automation. Here's a typical workflow
 
 ```bash
 # Create temporary email and extract details
-EMAIL=$(moemail create --domain moemail.app --expiry 1h --json)
+EMAIL=$(moemail create --domain example.com --expiry 1h --json)
 EMAIL_ID=$(echo $EMAIL | jq -r '.id')
 ADDRESS=$(echo $EMAIL | jq -r '.address')
 
@@ -94,8 +95,8 @@ All commands support `--json` flag for structured output, making them ideal for 
 
 ## Project Links
 
-- **Main Project**: https://github.com/beilunyang/moemail
-- **Issues & Feedback**: https://github.com/beilunyang/moemail/issues
+- **Main Project**: Configure this for your own MoeMail deployment.
+- **Issues & Feedback**: Use your own repository or support channel.
 
 ## License
 

@@ -119,7 +119,16 @@
     "save": "儲存設定",
     "saving": "儲存中...",
     "saveSuccess": "設定儲存成功",
-    "saveFailed": "儲存設定失敗"
+    "saveFailed": "儲存設定失敗",
+    "sourceLink": {
+      "enable": "顯示原始碼連結按鈕",
+      "enableDescription": "在頁面右下角顯示一個可設定的懸浮按鈕",
+      "url": "原始碼連結地址",
+      "urlPlaceholder": "https://your-repository.example",
+      "label": "按鈕文案",
+      "labelPlaceholder": "原始碼",
+      "defaultLabel": "原始碼"
+    }
   },
   "promote": {
     "title": "角色管理",

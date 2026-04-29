@@ -26,7 +26,7 @@ moemail --help
 
 Configure once per environment:
 ```bash
-moemail config set api-url https://moemail.app
+moemail config set api-url https://your-domain.example
 moemail config set api-key YOUR_API_KEY
 ```
 

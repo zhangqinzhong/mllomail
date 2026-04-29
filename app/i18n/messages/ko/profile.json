@@ -119,7 +119,16 @@
     "save": "설정 저장",
     "saving": "저장 중...",
     "saveSuccess": "설정이 성공적으로 저장되었습니다",
-    "saveFailed": "설정 저장에 실패했습니다"
+    "saveFailed": "설정 저장에 실패했습니다",
+    "sourceLink": {
+      "enable": "소스 링크 버튼 표시",
+      "enableDescription": "오른쪽 아래에 설정 가능한 플로팅 버튼을 표시합니다",
+      "url": "소스 링크 URL",
+      "urlPlaceholder": "https://your-repository.example",
+      "label": "버튼 라벨",
+      "labelPlaceholder": "소스 코드",
+      "defaultLabel": "소스 코드"
+    }
   },
   "promote": {
     "title": "역할 관리",
