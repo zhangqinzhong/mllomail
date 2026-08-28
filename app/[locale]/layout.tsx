@@ -45,7 +45,10 @@ export async function generateMetadata({
   const locale = localeFromParams as Locale
   const t = await getTranslations({ locale, namespace: "metadata" })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.CUSTOM_DOMAIN
+  const baseUrl = configuredBaseUrl
+    ? (/^https?:\/\//i.test(configuredBaseUrl) ? configuredBaseUrl : `https://${configuredBaseUrl}`).replace(/\/$/, "")
+    : "http://localhost:3000"
   
   // Generate hreflang links for all supported locales
   const languages: Record<string, string> = {}
@@ -54,6 +57,7 @@ export async function generateMetadata({
   })
 
   return {
+    metadataBase: new URL(baseUrl),
     title: t("title"),
     description: t("description"),
     keywords: t("keywords"),

@@ -470,6 +470,24 @@ const updateEnvVar = (name: string, value: string) => {
 };
 
 /**
+ * Ensure generated metadata points to the public site instead of localhost.
+ */
+const setupPublicBaseUrl = () => {
+  const configuredUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.CUSTOM_DOMAIN;
+  if (!configuredUrl) {
+    console.log("⚠️ Public base URL is empty, using the local development fallback...");
+    return;
+  }
+
+  const normalizedUrl = (/^https?:\/\//i.test(configuredUrl)
+    ? configuredUrl
+    : `https://${configuredUrl}`
+  ).replace(/\/$/, "");
+
+  updateEnvVar("NEXT_PUBLIC_BASE_URL", normalizedUrl);
+};
+
+/**
  * 主函数
  */
 const main = async () => {
@@ -483,6 +501,7 @@ const main = async () => {
     migrateDatabase();
     await checkAndCreateKVNamespace();
     await checkAndCreatePages();
+    setupPublicBaseUrl();
     pushPagesSecret();
     deployPages();
     deployEmailWorker();
