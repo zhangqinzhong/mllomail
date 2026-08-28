@@ -66,7 +66,8 @@ export async function middleware(request: Request) {
     const acceptLanguage = request.headers.get('Accept-Language')
     const preferredLocale = resolvePreferredLocale(cookieLocale, acceptLanguage)
     const targetLocale = preferredLocale ?? i18n.defaultLocale
-    const redirectURL = new URL(`/${targetLocale}${pathname}${url.search}`, request.url)
+    const localizedPathname = pathname === '/' ? '' : pathname
+    const redirectURL = new URL(`/${targetLocale}${localizedPathname}${url.search}`, request.url)
     return NextResponse.redirect(redirectURL)
   }
 

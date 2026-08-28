@@ -6,6 +6,7 @@ import { FeatureCard } from "@/components/home/feature-card"
 import { getTranslations } from "next-intl/server"
 import type { Locale } from "@/i18n/config"
 import { LegalFooter } from "@/components/layout/legal-footer"
+import { PublicAppInfo } from "@/components/home/public-app-info"
 
 export const runtime = "edge"
 
@@ -68,6 +69,7 @@ export default async function Home({
             </div>
           </div>
         </main>
+        <PublicAppInfo locale={locale} />
       </div>
       <LegalFooter locale={locale} />
     </div>
