@@ -4,6 +4,7 @@ import { dirname, resolve } from "node:path"
 const outputDir = resolve(".vercel/output/static")
 const routesPath = resolve(outputDir, "_routes.json")
 const staticAssets = ["/oauth-home.html"]
+const staticRoutes = ["/oauth-home", "/oauth-home.html"]
 
 if (!existsSync(outputDir)) {
   throw new Error(`Cloudflare Pages output directory does not exist: ${outputDir}`)
@@ -25,11 +26,11 @@ if (!existsSync(routesPath)) {
 const routes = JSON.parse(readFileSync(routesPath, "utf8"))
 routes.exclude = Array.isArray(routes.exclude) ? routes.exclude : []
 
-for (const asset of staticAssets) {
-  if (!routes.exclude.includes(asset)) {
-    routes.exclude.push(asset)
+for (const route of staticRoutes) {
+  if (!routes.exclude.includes(route)) {
+    routes.exclude.push(route)
   }
 }
 
 writeFileSync(routesPath, `${JSON.stringify(routes, null, 2)}\n`)
-console.log(`Prepared static OAuth homepage: ${staticAssets.join(", ")}`)
+console.log(`Prepared static OAuth homepage routes: ${staticRoutes.join(", ")}`)

@@ -1,3 +1,8 @@
+/oauth-home
+  Cache-Control: public, max-age=300, no-transform
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: all
+
 /oauth-home.html
   Cache-Control: public, max-age=300, no-transform
   X-Content-Type-Options: nosniff
