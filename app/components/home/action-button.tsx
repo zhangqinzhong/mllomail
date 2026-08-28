@@ -5,17 +5,19 @@ import { Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { SignButton } from "../auth/sign-button"
+import { useSession } from "next-auth/react"
 
-interface ActionButtonProps {
-  isLoggedIn?: boolean
-}
-
-export function ActionButton({ isLoggedIn }: ActionButtonProps) {
+export function ActionButton() {
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations("home")
+  const { data: session, status } = useSession()
 
-  if (isLoggedIn) {
+  if (status === "loading") {
+    return <div className="h-11" />
+  }
+
+  if (session?.user) {
     return (
       <Button 
         size="lg" 
@@ -29,4 +31,4 @@ export function ActionButton({ isLoggedIn }: ActionButtonProps) {
   }
 
   return <SignButton size="lg" />
-} 
+}

@@ -57,6 +57,12 @@ export async function middleware(request: Request) {
     return NextResponse.next()
   }
 
+  // Keep the public OAuth homepage on the root URL without a redirect.
+  if (pathname === '/') {
+    const rewriteURL = new URL(`/${i18n.defaultLocale}`, request.url)
+    return NextResponse.rewrite(rewriteURL)
+  }
+
   // Pages: 语言前缀
   const segments = pathname.split('/')
   const maybeLocale = segments[1]
@@ -66,8 +72,7 @@ export async function middleware(request: Request) {
     const acceptLanguage = request.headers.get('Accept-Language')
     const preferredLocale = resolvePreferredLocale(cookieLocale, acceptLanguage)
     const targetLocale = preferredLocale ?? i18n.defaultLocale
-    const localizedPathname = pathname === '/' ? '' : pathname
-    const redirectURL = new URL(`/${targetLocale}${localizedPathname}${url.search}`, request.url)
+    const redirectURL = new URL(`/${targetLocale}${pathname}${url.search}`, request.url)
     return NextResponse.redirect(redirectURL)
   }
 

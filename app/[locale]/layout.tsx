@@ -53,8 +53,10 @@ export async function generateMetadata({
   // Generate hreflang links for all supported locales
   const languages: Record<string, string> = {}
   i18n.locales.forEach((loc) => {
-    languages[loc] = `${baseUrl}/${loc}`
+    languages[loc] = loc === i18n.defaultLocale ? baseUrl : `${baseUrl}/${loc}`
   })
+
+  const canonicalUrl = locale === i18n.defaultLocale ? baseUrl : `${baseUrl}/${locale}`
 
   return {
     metadataBase: new URL(baseUrl),
@@ -75,7 +77,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       locale: locale === "zh-CN" ? "zh_CN" : locale === "zh-TW" ? "zh_TW" : locale,
-      url: `${baseUrl}/${locale}`,
+      url: canonicalUrl,
       title: t("title"),
       description: t("description"),
       siteName: "MoeMail",
@@ -86,7 +88,7 @@ export async function generateMetadata({
       description: t("description"),
     },
     alternates: {
-      canonical: `${baseUrl}/${locale}`,
+      canonical: canonicalUrl,
       languages,
     },
     manifest: '/manifest.json',
