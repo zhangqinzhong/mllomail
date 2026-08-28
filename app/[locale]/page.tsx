@@ -5,6 +5,7 @@ import { ActionButton } from "@/components/home/action-button"
 import { FeatureCard } from "@/components/home/feature-card"
 import { getTranslations } from "next-intl/server"
 import type { Locale } from "@/i18n/config"
+import { LegalFooter } from "@/components/layout/legal-footer"
 
 export const runtime = "edge"
 
@@ -68,7 +69,7 @@ export default async function Home({
           </div>
         </main>
       </div>
+      <LegalFooter locale={locale} />
     </div>
   )
 }
-
