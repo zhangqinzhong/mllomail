@@ -637,6 +637,18 @@ For full documentation, see [packages/cli/README.md](packages/cli/README.md).
 4. Get `Client ID` and `Client Secret`
 5. Configure env vars `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`
 
+### OAuth Login Troubleshooting
+
+- After changing `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `AUTH_GOOGLE_ID`, or `AUTH_GOOGLE_SECRET`, run the deployment workflow again so Cloudflare Pages receives the latest configuration.
+- If GitHub authorization succeeds but redirects to `/api/auth/error?error=Configuration`, check the Cloudflare Pages server logs first. If the log contains `unexpected "iss" (issuer) response parameter value`, keep this compatibility setting in the GitHub provider in `app/lib/auth.ts`:
+
+  ```ts
+  issuer: "https://github.com/login/oauth"
+  ```
+
+  This project already includes the setting. Do not drop it while syncing upstream changes or resolving merge conflicts unless the upgraded Auth.js version handles GitHub's `iss` response parameter.
+- `allowDangerousEmailAccountLinking` is enabled. When GitHub and Google return the same email address, both providers are linked to the same local user and therefore share that user's role and permissions; they are not separate accounts.
+
 ## Contribution
 
 Welcome to submit Pull Requests or Issues to help improve this project.

@@ -878,6 +878,18 @@ CONTENT=$(moemail read --email-id $EMAIL_ID --message-id $MSG_ID --json)
 4. 获取 `Client ID` 和 `Client Secret`
 5. 配置环境变量 `AUTH_GOOGLE_ID` 和 `AUTH_GOOGLE_SECRET`
 
+### OAuth 登录故障排查
+
+- 修改 `AUTH_SECRET`、`AUTH_GITHUB_ID`、`AUTH_GITHUB_SECRET`、`AUTH_GOOGLE_ID` 或 `AUTH_GOOGLE_SECRET` 后，需要重新运行部署工作流，让 Cloudflare Pages 使用最新配置。
+- 如果 GitHub 授权成功后返回 `/api/auth/error?error=Configuration`，请先查看 Cloudflare Pages 的服务端日志。如果日志包含 `unexpected "iss" (issuer) response parameter value`，请保留 `app/lib/auth.ts` 中 GitHub Provider 的以下兼容配置：
+
+  ```ts
+  issuer: "https://github.com/login/oauth"
+  ```
+
+  当前项目已经包含此配置。同步上游代码或解决合并冲突时不要误删，除非升级后的 Auth.js 已经处理 GitHub 返回的 `iss` 参数。
+- 项目启用了 `allowDangerousEmailAccountLinking`。当 GitHub 和 Google 返回相同邮箱时，它们会关联到同一个本地用户，因此共享原账号的角色和权限；这不是创建了两个独立账号。
+
 
 
 ## 贡献
