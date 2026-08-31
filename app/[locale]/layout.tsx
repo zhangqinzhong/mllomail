@@ -29,10 +29,11 @@ async function getMessages(locale: Locale) {
     const metadata = (await import(`@/i18n/messages/${locale}/metadata.json`)).default
     const emails = (await import(`@/i18n/messages/${locale}/emails.json`)).default
     const profile = (await import(`@/i18n/messages/${locale}/profile.json`)).default
-    return { common, home, auth, metadata, emails, profile }
+    const admin = (await import(`@/i18n/messages/${locale}/admin.json`)).default
+    return { common, home, auth, metadata, emails, profile, admin }
   } catch (error) {
     console.error(`Failed to load messages for locale ${locale}:`, error)
-    return { common: {}, home: {}, auth: {}, metadata: {}, emails: {}, profile: {} }
+    return { common: {}, home: {}, auth: {}, metadata: {}, emails: {}, profile: {}, admin: {} }
   }
 }
 

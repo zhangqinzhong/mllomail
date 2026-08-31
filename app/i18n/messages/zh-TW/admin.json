@@ -1,0 +1,42 @@
+{
+  "title": "皇帝看板",
+  "description": "統一管理使用者、身分、信箱數量和每日寄件額度。",
+  "refresh": "重新整理",
+  "loading": "正在載入使用者…",
+  "stats": {
+    "totalUsers": "全部使用者",
+    "activeMailboxes": "使用中信箱",
+    "privilegedUsers": "公爵與騎士",
+    "emperors": "皇帝使用者"
+  },
+  "users": {
+    "title": "使用者管理",
+    "description": "修改使用者身分和個人額度，儲存後立即生效。",
+    "searchPlaceholder": "搜尋姓名、使用者名稱或信箱",
+    "allRoles": "全部身分",
+    "empty": "沒有符合條件的使用者",
+    "user": "使用者",
+    "role": "身分",
+    "mailboxes": "使用中信箱",
+    "maxEmails": "信箱數量上限",
+    "dailySendLimit": "每日寄件額度",
+    "actions": "操作",
+    "useSiteDefault": "使用全站預設值",
+    "useRoleDefault": "使用身分預設值",
+    "save": "儲存",
+    "quotaHelp": "額度留空表示使用全站或身分預設值；每日寄件額度為 0 表示不限量，-1 表示禁止寄件。"
+  },
+  "roles": {
+    "emperor": "皇帝",
+    "duke": "公爵",
+    "knight": "騎士",
+    "civilian": "平民"
+  },
+  "messages": {
+    "loadFailed": "載入使用者失敗",
+    "saveFailed": "儲存使用者失敗",
+    "saveSuccess": "使用者設定已儲存",
+    "invalidMaxEmails": "信箱數量上限必須是 1 到 1000 的整數",
+    "invalidDailyLimit": "每日寄件額度必須是 -1 到 10000 的整數"
+  }
+}

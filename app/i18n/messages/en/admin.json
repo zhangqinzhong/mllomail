@@ -1,0 +1,42 @@
+{
+  "title": "Emperor Console",
+  "description": "Manage users, roles, mailbox quotas, and daily sending limits.",
+  "refresh": "Refresh",
+  "loading": "Loading users…",
+  "stats": {
+    "totalUsers": "Total users",
+    "activeMailboxes": "Active mailboxes",
+    "privilegedUsers": "Dukes and knights",
+    "emperors": "Emperors"
+  },
+  "users": {
+    "title": "User management",
+    "description": "Changes take effect as soon as they are saved.",
+    "searchPlaceholder": "Search name, username, or email",
+    "allRoles": "All roles",
+    "empty": "No matching users",
+    "user": "User",
+    "role": "Role",
+    "mailboxes": "Active mailboxes",
+    "maxEmails": "Mailbox limit",
+    "dailySendLimit": "Daily send limit",
+    "actions": "Actions",
+    "useSiteDefault": "Site default",
+    "useRoleDefault": "Role default",
+    "save": "Save",
+    "quotaHelp": "Leave a quota blank to use the site or role default. A daily send limit of 0 means unlimited; -1 disables sending."
+  },
+  "roles": {
+    "emperor": "Emperor",
+    "duke": "Duke",
+    "knight": "Knight",
+    "civilian": "Civilian"
+  },
+  "messages": {
+    "loadFailed": "Failed to load users",
+    "saveFailed": "Failed to save user",
+    "saveSuccess": "User settings saved",
+    "invalidMaxEmails": "Mailbox limit must be an integer from 1 to 1000",
+    "invalidDailyLimit": "Daily send limit must be an integer from -1 to 10000"
+  }
+}

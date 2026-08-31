@@ -1,13 +1,17 @@
 import { createDb } from "@/lib/db";
 import { roles, userRoles } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { ROLES } from "@/lib/permissions";
-import { assignRoleToUser } from "@/lib/auth";
+import { PERMISSIONS, ROLES } from "@/lib/permissions";
+import { assignRoleToUser, checkPermission } from "@/lib/auth";
 
 export const runtime = "edge";
 
 export async function POST(request: Request) {
   try {
+    if (!await checkPermission(PERMISSIONS.PROMOTE_USER)) {
+      return Response.json({ error: "仅皇帝可以修改用户角色" }, { status: 403 });
+    }
+
     const { userId, roleName } = await request.json() as { 
       userId: string, 
       roleName: typeof ROLES.DUKE | typeof ROLES.KNIGHT | typeof ROLES.CIVILIAN 

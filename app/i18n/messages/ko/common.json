@@ -14,7 +14,8 @@
     "profile": "프로필",
     "apiDocs": "API 문서",
     "logout": "로그아웃",
-    "backToMailbox": "메일함으로 돌아가기"
+    "backToMailbox": "메일함으로 돌아가기",
+    "admin": "황제 대시보드"
   },
   "github": "소스 코드 받기"
 }

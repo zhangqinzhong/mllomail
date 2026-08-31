@@ -1,11 +1,17 @@
 import { createDb } from "@/lib/db"
 import { users } from "@/lib/schema"
 import { eq } from "drizzle-orm"
+import { checkPermission } from "@/lib/auth"
+import { PERMISSIONS } from "@/lib/permissions"
 
 export const runtime = "edge"
 
 export async function POST(request: Request) {
   try {
+    if (!await checkPermission(PERMISSIONS.PROMOTE_USER)) {
+      return Response.json({ error: "仅皇帝可以查询用户角色" }, { status: 403 })
+    }
+
     const json = await request.json()
     const { searchText } = json as { searchText: string }
 
@@ -46,4 +52,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-} 
+}

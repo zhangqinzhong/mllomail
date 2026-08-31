@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { signOut, useSession } from "next-auth/react"
-import { BookOpen, LogIn } from "lucide-react"
+import { BookOpen, Crown, LogIn } from "lucide-react"
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from "next-intl"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { ROLES } from "@/lib/permissions"
 
 interface SignButtonProps {
   size?: "default" | "lg"
@@ -20,6 +21,7 @@ export function SignButton({ size = "default" }: SignButtonProps) {
   const t = useTranslations("auth.signButton")
   const tNav = useTranslations("common.nav")
   const loading = status === "loading"
+  const isEmperor = session?.user?.roles?.some(({ name }) => name === ROLES.EMPEROR) ?? false
 
   if (loading) {
     return <div className="h-9" />
@@ -36,6 +38,14 @@ export function SignButton({ size = "default" }: SignButtonProps) {
 
   return (
     <div className="flex items-center gap-y-4 gap-x-3 sm:gap-x-4">
+      {isEmperor && (
+        <Button asChild variant="ghost" size="sm" className="gap-2 px-2 text-amber-600 hover:text-amber-700 dark:text-amber-300 sm:px-3">
+          <Link href={`/${locale}/admin`} aria-label={tNav("admin")}>
+            <Crown className="h-4 w-4" />
+            <span className="hidden md:inline">{tNav("admin")}</span>
+          </Link>
+        </Button>
+      )}
       <Button asChild variant="ghost" size="sm" className="gap-2 px-2 sm:px-3">
         <Link href={`/${locale}/docs`} aria-label={tNav("apiDocs")}>
           <BookOpen className="h-4 w-4" />

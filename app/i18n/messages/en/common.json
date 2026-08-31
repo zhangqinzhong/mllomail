@@ -14,7 +14,8 @@
     "profile": "Profile",
     "apiDocs": "API Docs",
     "logout": "Logout",
-    "backToMailbox": "Back to Mailbox"
+    "backToMailbox": "Back to Mailbox",
+    "admin": "Emperor Console"
   },
   "github": "Get Source Code"
 }

@@ -17,17 +17,24 @@ export async function POST(request: Request) {
   const env = getRequestContext().env
 
   const userId = await getUserId()
-  const userRole = await getUserRole(userId!)
+  if (!userId) {
+    return NextResponse.json({ error: "未登录" }, { status: 401 })
+  }
+
+  const userRole = await getUserRole(userId)
 
   try {
     if (userRole !== ROLES.EMPEROR) {
-      const maxEmails = await env.SITE_CONFIG.get("MAX_EMAILS") || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString()
+      const userMaxEmails = await env.SITE_CONFIG.get(`USER_MAX_EMAILS:${userId}`)
+      const maxEmails = userMaxEmails
+        || await env.SITE_CONFIG.get("MAX_EMAILS")
+        || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString()
       const activeEmailsCount = await db
         .select({ count: sql<number>`count(*)` })
         .from(emails)
         .where(
           and(
-            eq(emails.userId, userId!),
+            eq(emails.userId, userId),
             gt(emails.expiresAt, new Date())
           )
         )
@@ -84,7 +91,7 @@ export async function POST(request: Request) {
       address,
       createdAt: now,
       expiresAt: expires,
-      userId: userId!
+      userId
     }
     
     const result = await db.insert(emails)

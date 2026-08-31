@@ -26,7 +26,7 @@ export async function checkSendPermission(
     }
 
     const userDailyLimit = await getUserDailyLimit(userId)
-    
+
     if (userDailyLimit === -1) {
       return {
         canSend: false,
@@ -39,11 +39,11 @@ export async function checkSendPermission(
         canSend: true
       }
     }
-    
+
     const db = createDb()
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    
+
     const sentToday = await db
       .select()
       .from(messages)
@@ -57,7 +57,7 @@ export async function checkSendPermission(
       )
 
     const remainingEmails = Math.max(0, userDailyLimit - sentToday.length)
-    
+
     if (sentToday.length >= userDailyLimit) {
       return {
         canSend: false,
@@ -81,8 +81,17 @@ export async function checkSendPermission(
 
 async function getUserDailyLimit(userId: string): Promise<number> {
   try {
+    const env = getRequestContext().env
+    const userOverride = await env.SITE_CONFIG.get(`USER_DAILY_SEND_LIMIT:${userId}`)
+    if (userOverride !== null) {
+      const parsedOverride = Number(userOverride)
+      if (Number.isInteger(parsedOverride) && parsedOverride >= -1) {
+        return parsedOverride
+      }
+    }
+
     const db = createDb()
-    
+
     const userRoleData = await db
       .select({ roleName: roles.name })
       .from(userRoles)
@@ -91,11 +100,10 @@ async function getUserDailyLimit(userId: string): Promise<number> {
 
     const userRoleNames = userRoleData.map(r => r.roleName)
 
-    const env = getRequestContext().env
     const roleLimitsStr = await env.SITE_CONFIG.get("EMAIL_ROLE_LIMITS")
-    
+
     const customLimits = roleLimitsStr ? JSON.parse(roleLimitsStr) : {}
-    
+
     const finalLimits = {
       emperor: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.emperor,
       duke: customLimits.duke !== undefined ? customLimits.duke : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.duke,
@@ -122,4 +130,4 @@ async function getUserDailyLimit(userId: string): Promise<number> {
 
 export async function checkBasicSendPermission(userId: string): Promise<SendPermissionResult> {
   return checkSendPermission(userId, true)
-} 
+}

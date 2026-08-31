@@ -14,7 +14,8 @@
     "profile": "个人中心",
     "apiDocs": "API 文档",
     "logout": "退出登录",
-    "backToMailbox": "返回邮箱"
+    "backToMailbox": "返回邮箱",
+    "admin": "皇帝看板"
   },
   "github": "获取网站源代码"
 }

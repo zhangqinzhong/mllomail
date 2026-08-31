@@ -14,7 +14,8 @@
     "profile": "プロフィール",
     "apiDocs": "API ドキュメント",
     "logout": "ログアウト",
-    "backToMailbox": "メールボックスに戻る"
+    "backToMailbox": "メールボックスに戻る",
+    "admin": "皇帝ダッシュボード"
   },
   "github": "ソースコードを入手"
 }

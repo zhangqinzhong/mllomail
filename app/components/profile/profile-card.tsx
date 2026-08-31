@@ -11,7 +11,7 @@ import { WebhookConfig } from "./webhook-config"
 import { PromotePanel } from "./promote-panel"
 import { EmailServiceConfig } from "./email-service-config"
 import { useRolePermission } from "@/hooks/use-role-permission"
-import { PERMISSIONS } from "@/lib/permissions"
+import { PERMISSIONS, ROLES } from "@/lib/permissions"
 import { WebsiteConfigPanel } from "./website-config-panel"
 import { ApiKeyPanel } from "./api-key-panel"
 
@@ -65,10 +65,11 @@ export function ProfileCard({ user }: ProfileCardProps) {
   const tNav = useTranslations("common.nav")
   const locale = useLocale()
   const router = useRouter()
-  const { checkPermission } = useRolePermission()
+  const { checkPermission, hasRole } = useRolePermission()
   const canManageWebhook = checkPermission(PERMISSIONS.MANAGE_WEBHOOK)
   const canPromote = checkPermission(PERMISSIONS.PROMOTE_USER)
   const canManageConfig = checkPermission(PERMISSIONS.MANAGE_CONFIG)
+  const isEmperor = hasRole(ROLES.EMPEROR)
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -151,6 +152,15 @@ export function ProfileCard({ user }: ProfileCardProps) {
       {canManageWebhook && <ApiKeyPanel />}
 
       <div className="flex flex-col sm:flex-row gap-4 px-1">
+        {isEmperor && (
+          <Button
+            onClick={() => router.push(`/${locale}/admin`)}
+            className="gap-2 flex-1 bg-amber-500 text-amber-950 hover:bg-amber-400"
+          >
+            <Crown className="w-4 h-4" />
+            {tNav("admin")}
+          </Button>
+        )}
         <Button
           onClick={() => router.push(`/${locale}/moe`)}
           className="gap-2 flex-1"
@@ -168,4 +178,4 @@ export function ProfileCard({ user }: ProfileCardProps) {
       </div>
     </div>
   )
-} 
+}
