@@ -1,14 +1,14 @@
-# MoeMail CLI Implementation Plan
+# MlloMail CLI Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build an agent-first CLI tool that wraps MoeMail's existing REST API, published as an npm package.
+**Goal:** Build an agent-first CLI tool that wraps MlloMail's existing REST API, published as an npm package.
 
-**Architecture:** CLI lives in `packages/cli/`, uses commander for arg parsing, calls MoeMail API via `fetch` with `X-API-Key` auth. One server-side fix needed for the send endpoint auth.
+**Architecture:** CLI lives in `packages/cli/`, uses commander for arg parsing, calls MlloMail API via `fetch` with `X-API-Key` auth. One server-side fix needed for the send endpoint auth.
 
 **Tech Stack:** TypeScript, Bun (build), commander (CLI framework), Node built-in `fetch` and `fs`
 
-**Spec:** `specs/2026-03-22-moemail-cli-design.md`
+**Spec:** `specs/2026-03-22-mllomail-cli-design.md`
 
 ---
 
@@ -27,7 +27,7 @@ packages/cli/
 │   │   ├── send.ts       # send email
 │   │   └── delete.ts     # delete mailbox or message
 │   ├── api.ts            # HTTP client — all API calls, error handling, auth header
-│   ├── config.ts         # Config file read/write (~/.moemail/config.json) + env override
+│   ├── config.ts         # Config file read/write (~/.mllomail/config.json) + env override
 │   └── output.ts         # Output helpers — json/text formatting, stderr logging
 ├── package.json
 ├── tsconfig.json
@@ -56,12 +56,12 @@ packages/cli/
 
 ```json
 {
-  "name": "moemail-cli",
+  "name": "mllomail-cli",
   "version": "0.1.0",
-  "description": "Agent-first CLI for MoeMail temporary email service",
+  "description": "Agent-first CLI for MlloMail temporary email service",
   "type": "module",
   "bin": {
-    "moemail": "dist/index.js"
+    "mllomail": "dist/index.js"
   },
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target=node",
@@ -105,8 +105,8 @@ import { Command } from "commander";
 const program = new Command();
 
 program
-  .name("moemail")
-  .description("MoeMail CLI — Agent-friendly temporary email tool")
+  .name("mllomail")
+  .description("MlloMail CLI — Agent-friendly temporary email tool")
   .version("0.1.0");
 
 program.parse();
@@ -158,7 +158,7 @@ export interface CliConfig {
   apiKey: string;
 }
 
-const CONFIG_DIR = join(homedir(), ".moemail");
+const CONFIG_DIR = join(homedir(), ".mllomail");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
 export function loadConfig(): CliConfig {
@@ -174,8 +174,8 @@ export function loadConfig(): CliConfig {
   }
 
   // Env overrides (higher priority)
-  if (process.env.MOEMAIL_API_URL) config.apiUrl = process.env.MOEMAIL_API_URL;
-  if (process.env.MOEMAIL_API_KEY) config.apiKey = process.env.MOEMAIL_API_KEY;
+  if (process.env.MLLOMAIL_API_URL) config.apiUrl = process.env.MLLOMAIL_API_URL;
+  if (process.env.MLLOMAIL_API_KEY) config.apiKey = process.env.MLLOMAIL_API_KEY;
 
   return config;
 }
@@ -253,8 +253,8 @@ import { registerConfigCommand } from "./commands/config.js";
 const program = new Command();
 
 program
-  .name("moemail")
-  .description("MoeMail CLI — Agent-friendly temporary email tool")
+  .name("mllomail")
+  .description("MlloMail CLI — Agent-friendly temporary email tool")
   .version("0.1.0")
   .option("--json", "output as JSON");
 
@@ -267,10 +267,10 @@ program.parse();
 
 ```bash
 cd packages/cli
-bun run src/index.ts config set api-url https://moemail.app
+bun run src/index.ts config set api-url https://zclaude.com
 bun run src/index.ts config set api-key mk_test123
 bun run src/index.ts config list
-cat ~/.moemail/config.json
+cat ~/.mllomail/config.json
 ```
 
 Expected: config values saved and displayed correctly.
@@ -360,11 +360,11 @@ async function request(
   const config = loadConfig();
 
   if (!config.apiUrl) {
-    log("Error: API URL not configured. Run: moemail config set api-url <url>");
+    log("Error: API URL not configured. Run: mllomail config set api-url <url>");
     process.exit(2);
   }
   if (!config.apiKey) {
-    log("Error: API Key not configured. Run: moemail config set api-key <key>");
+    log("Error: API Key not configured. Run: mllomail config set api-key <key>");
     process.exit(2);
   }
 
@@ -523,7 +523,7 @@ Add import and call `registerCreateCommand(program)` before `program.parse()`.
 ```bash
 cd packages/cli
 bun run src/index.ts create --help
-bun run src/index.ts create --domain moemail.app --expiry 1h --json
+bun run src/index.ts create --domain zclaude.com --expiry 1h --json
 ```
 
 - [ ] **Step 4: Commit**
@@ -997,14 +997,14 @@ git commit -m "feat(cli): add send command"
 - [ ] **Step 1: Write README**
 
 Include:
-- One-line description: "Agent-first CLI for MoeMail temporary email service"
-- Install: `npm i -g moemail-cli`
+- One-line description: "Agent-first CLI for MlloMail temporary email service"
+- Install: `npm i -g mllomail-cli`
 - Quick start (3 steps: config → create → wait)
 - Command reference table (all 7 commands with key flags)
 - Agent workflow example (the bash script from the spec)
 - JSON output format note
 - Exit codes table
-- Link to MoeMail main project
+- Link to MlloMail main project
 
 - [ ] **Step 2: Commit**
 

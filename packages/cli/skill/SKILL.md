@@ -1,53 +1,53 @@
 ---
-name: moemail
-description: Use when an AI agent needs a temporary/disposable email address — for receiving verification emails, testing email integrations, or any task requiring a temporary inbox via the moemail CLI
+name: mllomail
+description: Use when an AI agent needs a temporary/disposable email address — for receiving verification emails, testing email integrations, or any task requiring a temporary inbox via the mllomail CLI
 ---
 
-# MoeMail — Temporary Email for AI Agents
+# MlloMail — Temporary Email for AI Agents
 
 ## Overview
-MoeMail provides disposable email addresses with an agent-first CLI (`moemail`). Create inboxes, wait for messages, read content, and send emails programmatically.
+MlloMail provides disposable email addresses with an agent-first CLI (`mllomail`). Create inboxes, wait for messages, read content, and send emails programmatically.
 
 ## Install
 
-Install the MoeMail CLI globally when it is not already available:
+Install the MlloMail CLI globally when it is not already available:
 
 ```bash
-npm i -g @moemail/cli
+npm i -g @mllomail/cli
 ```
 
 Then confirm the binary is available:
 
 ```bash
-moemail --help
+mllomail --help
 ```
 
 ## Setup
 
 Configure once per environment:
 ```bash
-moemail config set api-url https://your-domain.example
-moemail config set api-key YOUR_API_KEY
+mllomail config set api-url https://your-domain.example
+mllomail config set api-key YOUR_API_KEY
 ```
 
-Or via environment variables: `MOEMAIL_API_URL`, `MOEMAIL_API_KEY`.
+Or via environment variables: `MLLOMAIL_API_URL`, `MLLOMAIL_API_KEY`.
 
 ## Core Workflow: Receive an Email
 
 ```bash
 # 1. Create inbox — capture ONCE, parse both fields
-RESULT=$(moemail --json create --expiry 1h)
+RESULT=$(mllomail --json create --expiry 1h)
 ID=$(echo "$RESULT" | jq -r '.id')
 EMAIL=$(echo "$RESULT" | jq -r '.address')
 
 # 2. Use $EMAIL wherever needed (registration, forms, etc.)
 
 # 3. Wait for message (exits when message arrives or times out)
-MSG=$(moemail --json wait --email-id "$ID" --timeout 120)
+MSG=$(mllomail --json wait --email-id "$ID" --timeout 120)
 MSG_ID=$(echo "$MSG" | jq -r '.messageId')
 
 # 4. Read full message content
-moemail --json read --email-id "$ID" --message-id "$MSG_ID"
+mllomail --json read --email-id "$ID" --message-id "$MSG_ID"
 ```
 
 ## Command Reference
@@ -64,8 +64,8 @@ moemail --json read --email-id "$ID" --message-id "$MSG_ID"
 
 **Always put `--json` before the subcommand:**
 ```bash
-moemail --json create --expiry 24h   # ✅ correct
-moemail create --expiry 24h --json   # ❌ wrong position
+mllomail --json create --expiry 24h   # ✅ correct
+mllomail create --expiry 24h --json   # ❌ wrong position
 ```
 
 ## JSON Output Shapes

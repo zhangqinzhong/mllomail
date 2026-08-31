@@ -1,23 +1,23 @@
-# MoeMail
+# MlloMail
 
 > Temporary email service with CLI tool for AI Agents
 
-MoeMail provides disposable email addresses. Install the CLI for programmatic access:
+MlloMail provides disposable email addresses. Install the CLI for programmatic access:
 
 ## CLI Tool
 
-Install: npm i -g @moemail/cli
+Install: npm i -g @mllomail/cli
 
-Setup: moemail config set api-url https://your-domain.example && moemail config set api-key YOUR_KEY
+Setup: mllomail config set api-url https://your-domain.example && mllomail config set api-key YOUR_KEY
 
 Commands:
-- moemail create --domain <domain> --expiry <1h|24h|3d|permanent> --json
-- moemail list --json
-- moemail list --email-id <id> --json
-- moemail wait --email-id <id> --timeout <seconds> --json
-- moemail read --email-id <id> --message-id <id> --json
-- moemail send --email-id <id> --to <addr> --subject <subj> --content <body> --json
-- moemail delete --email-id <id> --json
+- mllomail create --domain <domain> --expiry <1h|24h|3d|permanent> --json
+- mllomail list --json
+- mllomail list --email-id <id> --json
+- mllomail wait --email-id <id> --timeout <seconds> --json
+- mllomail read --email-id <id> --message-id <id> --json
+- mllomail send --email-id <id> --to <addr> --subject <subj> --content <body> --json
+- mllomail delete --email-id <id> --json
 
 Typical workflow: create email → use address for signup → wait for verification → read content → extract code → delete
 

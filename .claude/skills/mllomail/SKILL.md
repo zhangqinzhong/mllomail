@@ -1,34 +1,34 @@
 ---
-name: moemail
-description: Use when working in this repository and an AI agent needs a temporary/disposable email address through the MoeMail CLI.
+name: mllomail
+description: Use when working in this repository and an AI agent needs a temporary/disposable email address through the MlloMail CLI.
 ---
 
-# MoeMail for This Repository
+# MlloMail for This Repository
 
 ## When to use
 
-Use this skill when you are inside the `moemail` repository and need to create inboxes, wait for messages, read message content, or send test emails with the MoeMail CLI.
+Use this skill when you are inside the `mllomail` repository and need to create inboxes, wait for messages, read message content, or send test emails with the MlloMail CLI.
 
 ## Install
 
-Install the MoeMail CLI globally when it is not already available:
+Install the MlloMail CLI globally when it is not already available:
 
 ```bash
-npm i -g @moemail/cli
+npm i -g @mllomail/cli
 ```
 
 Then confirm the binary is available:
 
 ```bash
-moemail --help
+mllomail --help
 ```
 
 ## Preferred CLI
 
-Prefer the installed `moemail` CLI when it is available:
+Prefer the installed `mllomail` CLI when it is available:
 
 ```bash
-CLI="moemail"
+CLI="mllomail"
 ```
 
 If the global CLI is unavailable and you are working inside this repository, fall back to the repo-local build:
@@ -52,9 +52,9 @@ $CLI config set api-url http://localhost:3000
 $CLI config set api-key YOUR_API_KEY
 ```
 
-For the hosted service, use `https://moemail.app` instead.
+For the hosted service, use `https://zclaude.com` instead.
 
-You can also use environment variables: `MOEMAIL_API_URL`, `MOEMAIL_API_KEY`.
+You can also use environment variables: `MLLOMAIL_API_URL`, `MLLOMAIL_API_KEY`.
 
 ## Core workflow
 

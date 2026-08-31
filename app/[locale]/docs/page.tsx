@@ -10,7 +10,7 @@ import type { Locale } from "@/i18n/config"
 export const runtime = "edge"
 
 export const metadata: Metadata = {
-  title: "API Docs | MoeMail",
+  title: "API Docs | MlloMail",
   robots: { index: false, follow: false },
 }
 

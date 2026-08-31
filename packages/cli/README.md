@@ -1,29 +1,29 @@
-# MoeMail CLI
+# MlloMail CLI
 
-Agent-first CLI for MoeMail temporary email service
+Agent-first CLI for MlloMail temporary email service
 
 ## Install
 
 ```bash
-npm i -g @moemail/cli
+npm i -g @mllomail/cli
 ```
 
 ## Quick Start
 
 ### 1. Configure default domain
 ```bash
-moemail config set api-url https://your-domain.example
-moemail config set api-key YOUR_API_KEY
+mllomail config set api-url https://your-domain.example
+mllomail config set api-key YOUR_API_KEY
 ```
 
 ### 2. Create a temporary email
 ```bash
-moemail create --expiry 1h
+mllomail create --expiry 1h
 ```
 
 ### 3. Wait for messages
 ```bash
-moemail wait --email-id <email_id> --timeout 120
+mllomail wait --email-id <email_id> --timeout 120
 ```
 
 ## Command Reference
@@ -45,42 +45,42 @@ The CLI is designed to support agent-first automation. Here's a typical workflow
 
 ```bash
 # Create temporary email and extract details
-EMAIL=$(moemail create --domain example.com --expiry 1h --json)
+EMAIL=$(mllomail create --domain example.com --expiry 1h --json)
 EMAIL_ID=$(echo $EMAIL | jq -r '.id')
 ADDRESS=$(echo $EMAIL | jq -r '.address')
 
 # Use ADDRESS for signup or service registration...
 
 # Wait for verification email
-MSG=$(moemail wait --email-id $EMAIL_ID --timeout 120 --json)
+MSG=$(mllomail wait --email-id $EMAIL_ID --timeout 120 --json)
 MSG_ID=$(echo $MSG | jq -r '.messageId')
 
 # Read message content
-CONTENT=$(moemail read --email-id $EMAIL_ID --message-id $MSG_ID --json)
+CONTENT=$(mllomail read --email-id $EMAIL_ID --message-id $MSG_ID --json)
 
 # Extract verification code from CONTENT...
 
 # Cleanup
-moemail delete --email-id $EMAIL_ID
+mllomail delete --email-id $EMAIL_ID
 ```
 
 ## AI Agent Skill
 
-The CLI ships with a built-in skill file that teaches AI agents how to use MoeMail. Install it to your agent platform:
+The CLI ships with a built-in skill file that teaches AI agents how to use MlloMail. Install it to your agent platform:
 
 ```bash
 # Auto-detect installed platforms (Claude Code, Codex)
-moemail skill install
+mllomail skill install
 
 # Install to a specific platform
-moemail skill install --platform claude
-moemail skill install --platform codex
+mllomail skill install --platform claude
+mllomail skill install --platform codex
 
 # Install to all supported platforms (skip detection)
-moemail skill install --platform all
+mllomail skill install --platform all
 ```
 
-After installation, AI agents will automatically know how to create temporary emails, wait for messages, and read content using the MoeMail CLI.
+After installation, AI agents will automatically know how to create temporary emails, wait for messages, and read content using the MlloMail CLI.
 
 ## JSON Output
 
@@ -95,7 +95,7 @@ All commands support `--json` flag for structured output, making them ideal for 
 
 ## Project Links
 
-- **Main Project**: Configure this for your own MoeMail deployment.
+- **Main Project**: Configure this for your own MlloMail deployment.
 - **Issues & Feedback**: Use your own repository or support channel.
 
 ## License

@@ -1,10 +1,10 @@
 {
-  "name": "@moemail/cli",
+  "name": "@mllomail/cli",
   "version": "0.1.2",
-  "description": "Agent-first CLI for MoeMail temporary email service",
+  "description": "Agent-first CLI for MlloMail temporary email service",
   "type": "module",
   "bin": {
-    "moemail": "dist/index.js"
+    "mllomail": "dist/index.js"
   },
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target=node",

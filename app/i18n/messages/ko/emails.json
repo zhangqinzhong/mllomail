@@ -159,11 +159,11 @@
     "permanent": "영구",
     "createOwnEmail": "나만의 임시 이메일 만들기",
     "brand": {
-      "title": "MoeMail",
+      "title": "MlloMail",
       "subtitle": "귀여운 임시 이메일 서비스",
       "cta": "지금 사용해보기",
       "officialSite": "공식 사이트",
-      "copyright": "© 2024 MoeMail. 귀여운 임시 이메일 서비스"
+      "copyright": "© 2024 MlloMail. 귀여운 임시 이메일 서비스"
     }
   }
 }

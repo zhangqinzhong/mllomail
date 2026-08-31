@@ -63,9 +63,9 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     keywords: t("keywords"),
-    authors: [{ name: "SoftMoe Studio" }],
-    creator: "SoftMoe Studio",
-    publisher: "SoftMoe Studio",
+    authors: [{ name: "MlloMail" }],
+    creator: "MlloMail",
+    publisher: "MlloMail",
     robots: {
       index: true,
       follow: true,
@@ -80,7 +80,7 @@ export async function generateMetadata({
       url: canonicalUrl,
       title: t("title"),
       description: t("description"),
-      siteName: "MoeMail",
+      siteName: "MlloMail",
     },
     twitter: {
       card: "summary_large_image",
@@ -93,7 +93,7 @@ export async function generateMetadata({
     },
     manifest: '/manifest.json',
     icons: [
-      { rel: 'apple-touch-icon', url: '/icons/icon-192x192.png' },
+      { rel: 'apple-touch-icon', url: '/icons/mllomail-logo-192.png' },
     ],
   }
 }
@@ -116,10 +116,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <meta name="application-name" content="MoeMail" />
+        <meta name="application-name" content="MlloMail" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="MoeMail" />
+        <meta name="apple-mobile-web-app-title" content="MlloMail" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>

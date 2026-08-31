@@ -59,7 +59,7 @@ type DocsCopy = {
 
 const EN_COPY: DocsCopy = {
   eyebrow: "Developer API",
-  title: "MoeMail API documentation",
+  title: "MlloMail API documentation",
   subtitle: "Create temporary mailboxes, read messages, send mail, and manage share links from your own applications.",
   signedInOnly: "Signed-in documentation",
   onThisPage: "On this page",
@@ -73,7 +73,7 @@ const EN_COPY: DocsCopy = {
   errors: "Errors",
   baseUrl: "Base URL",
   quickStart: "Quick start",
-  quickStartText: "Every API request uses your current MoeMail domain and an API key.",
+  quickStartText: "Every API request uses your current MlloMail domain and an API key.",
   createKey: "Create an API key",
   createKeyText: "Open Profile and create a named API key. The secret is displayed once and expires after one year.",
   addHeader: "Add the request header",
@@ -138,7 +138,7 @@ const EN_COPY: DocsCopy = {
 const ZH_CN_COPY: DocsCopy = {
   ...EN_COPY,
   eyebrow: "开发者 API",
-  title: "MoeMail API 文档",
+  title: "MlloMail API 文档",
   subtitle: "在你自己的程序中创建临时邮箱、读取邮件、发送邮件并管理分享链接。",
   signedInOnly: "登录后可查看",
   onThisPage: "本页目录",
@@ -152,7 +152,7 @@ const ZH_CN_COPY: DocsCopy = {
   errors: "错误处理",
   baseUrl: "基础地址",
   quickStart: "快速开始",
-  quickStartText: "所有 API 请求均使用当前 MoeMail 域名和 API Key。",
+  quickStartText: "所有 API 请求均使用当前 MlloMail 域名和 API Key。",
   createKey: "创建 API Key",
   createKeyText: "前往个人中心创建一个命名的 API Key。密钥只在创建时显示，有效期为一年。",
   addHeader: "添加请求头",
@@ -217,7 +217,7 @@ const ZH_CN_COPY: DocsCopy = {
 const ZH_TW_COPY: DocsCopy = {
   ...ZH_CN_COPY,
   eyebrow: "開發者 API",
-  title: "MoeMail API 文件",
+  title: "MlloMail API 文件",
   subtitle: "在你自己的程式中建立臨時信箱、讀取郵件、傳送郵件並管理分享連結。",
   signedInOnly: "登入後可查看",
   onThisPage: "本頁目錄",
@@ -230,7 +230,7 @@ const ZH_TW_COPY: DocsCopy = {
   sharing: "分享連結",
   errors: "錯誤處理",
   quickStart: "快速開始",
-  quickStartText: "所有 API 請求均使用目前 MoeMail 網域和 API Key。",
+  quickStartText: "所有 API 請求均使用目前 MlloMail 網域和 API Key。",
   createKey: "建立 API Key",
   createKeyText: "前往個人中心建立一個命名的 API Key。金鑰只在建立時顯示，有效期為一年。",
   addHeader: "加入請求標頭",
@@ -471,7 +471,7 @@ export function ApiDocs({
           request: `curl -X POST ${baseUrl}/api/emails/{emailId}/send \\\n+  -H "X-API-Key: YOUR_API_KEY" \\\n+  -H "Content-Type: application/json" \\\n+  -d '{
     "to": "recipient@example.com",
     "subject": "Hello",
-    "content": "<p>Sent from MoeMail</p>"
+    "content": "<p>Sent from MlloMail</p>"
   }'`,
           response: `{
   "success": true,
