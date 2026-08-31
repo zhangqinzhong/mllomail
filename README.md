@@ -106,7 +106,7 @@ openssl rand -base64 32
 - OAuth app name: `MlloMail`
 - App logo: `public/icons/mllomail-oauth-120.png`
 
-Renaming the repository or the Cloudflare Pages project does not require a new OAuth client. The existing Client ID and Secret remain valid when the domain and callback URLs stay unchanged. After changing the brand from MoeMail to MlloMail, update the app name, logo, and homepage details in Google Auth Platform. Google may request brand verification again.
+Renaming the repository or the Cloudflare Pages project does not require a new OAuth client. The existing Client ID and Secret remain valid when the domain and callback URLs stay unchanged. After changing the brand from MoeMail to MlloMail, update the app name, logo, and homepage details in Google Auth Platform and complete brand verification again.
 
 ## Cloudflare Deployment
 

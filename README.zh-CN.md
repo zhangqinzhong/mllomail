@@ -106,7 +106,7 @@ openssl rand -base64 32
 - OAuth 应用名称应与首页保持一致：`MlloMail`
 - 应用徽标可使用：`public/icons/mllomail-oauth-120.png`
 
-仅修改仓库名或 Cloudflare Pages 项目名时，不需要重新创建 OAuth Client。继续使用相同域名和回调地址即可沿用原 Client ID 与 Secret。品牌名称从 MoeMail 改为 MlloMail 后，需要在 Google Auth Platform 的“品牌”页面同步修改应用名称、徽标和首页信息；Google 可能要求重新进行品牌验证。
+仅修改仓库名或 Cloudflare Pages 项目名时，不需要重新创建 OAuth Client。继续使用相同域名和回调地址即可沿用原 Client ID 与 Secret。品牌名称从 MoeMail 改为 MlloMail 后，需要在 Google Auth Platform 的“品牌”页面同步修改应用名称、徽标和首页信息，并重新完成品牌验证。
 
 ## Cloudflare 部署
 
