@@ -427,6 +427,8 @@ pnpx cloudflared tunnel --url http://localhost:3001
 
 本项目提供了 OpenAPI 接口，支持通过 API Key 进行访问。API Key 可以在个人中心页面创建（需要是公爵或皇帝角色）。
 
+登录后可通过顶部导航的 **API 文档** 进入站内文档页：`/<locale>/docs`。该页面会自动使用当前站点域名生成可复制的 curl 示例。
+
 ### 使用 API Key
 
 在请求头中添加 API Key：

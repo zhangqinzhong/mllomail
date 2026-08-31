@@ -12,9 +12,9 @@
     "home": "ホーム",
     "login": "ログイン",
     "profile": "プロフィール",
+    "apiDocs": "API ドキュメント",
     "logout": "ログアウト",
     "backToMailbox": "メールボックスに戻る"
   },
   "github": "ソースコードを入手"
 }
-

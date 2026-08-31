@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { signOut, useSession } from "next-auth/react"
-import { LogIn } from "lucide-react"
+import { BookOpen, LogIn } from "lucide-react"
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from "next-intl"
 import Link from "next/link"
@@ -18,6 +18,7 @@ export function SignButton({ size = "default" }: SignButtonProps) {
   const locale = useLocale()
   const { data: session, status } = useSession()
   const t = useTranslations("auth.signButton")
+  const tNav = useTranslations("common.nav")
   const loading = status === "loading"
 
   if (loading) {
@@ -35,7 +36,13 @@ export function SignButton({ size = "default" }: SignButtonProps) {
 
   return (
     <div className="flex items-center gap-y-4 gap-x-3 sm:gap-x-4">
-      <Link 
+      <Button asChild variant="ghost" size="sm" className="gap-2 px-2 sm:px-3">
+        <Link href={`/${locale}/docs`} aria-label={tNav("apiDocs")}>
+          <BookOpen className="h-4 w-4" />
+          <span className="hidden md:inline">{tNav("apiDocs")}</span>
+        </Link>
+      </Button>
+      <Link
         href={`/${locale}/profile`}
         className="flex items-center gap-2 hover:opacity-80 transition-opacity"
       >
@@ -55,4 +62,4 @@ export function SignButton({ size = "default" }: SignButtonProps) {
       </Button>
     </div>
   )
-} 
+}

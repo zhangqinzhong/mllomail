@@ -12,6 +12,7 @@
     "home": "Home",
     "login": "Login",
     "profile": "Profile",
+    "apiDocs": "API Docs",
     "logout": "Logout",
     "backToMailbox": "Back to Mailbox"
   },

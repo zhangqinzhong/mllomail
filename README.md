@@ -428,6 +428,8 @@ pnpx cloudflared tunnel --url http://localhost:3001
 
 The project provides OpenAPI interfaces, accessible via API Key. API Keys can be created in User Profile (Requires Duke or Emperor role).
 
+After signing in, open **API Docs** from the top navigation or visit `/<locale>/docs`. The page generates copyable curl examples using the current site domain.
+
 ### Using API Key
 
 Add API Key to request header:

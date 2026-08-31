@@ -12,6 +12,7 @@
     "home": "홈",
     "login": "로그인",
     "profile": "프로필",
+    "apiDocs": "API 문서",
     "logout": "로그아웃",
     "backToMailbox": "메일함으로 돌아가기"
   },

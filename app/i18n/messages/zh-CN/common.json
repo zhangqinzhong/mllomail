@@ -12,6 +12,7 @@
     "home": "首页",
     "login": "登录",
     "profile": "个人中心",
+    "apiDocs": "API 文档",
     "logout": "退出登录",
     "backToMailbox": "返回邮箱"
   },
