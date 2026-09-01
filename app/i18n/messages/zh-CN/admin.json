@@ -93,6 +93,22 @@
     "messages": "邮件数量",
     "active": "使用中",
     "expired": "已过期",
-    "messageBreakdown": "收件 {received} · 发件 {sent}"
+    "messageBreakdown": "收件 {received} · 发件 {sent}",
+    "viewMessages": "查看邮件",
+    "closeMessages": "关闭邮件列表",
+    "messageListDescription": "点击邮件即可查看正文，最多显示最近 200 封。",
+    "messagesLoadFailed": "加载邮箱邮件失败",
+    "messageLoadFailed": "加载邮件正文失败",
+    "loadingMessages": "正在加载邮件…",
+    "noMessages": "该邮箱还没有邮件。",
+    "to": "收件人",
+    "from": "发件人",
+    "sent": "已发送",
+    "received": "已接收",
+    "loadingMessage": "正在加载邮件正文…",
+    "time": "时间",
+    "htmlBody": "HTML 正文",
+    "textBody": "纯文本正文",
+    "emptyBody": "没有纯文本正文。"
   }
 }

@@ -93,6 +93,22 @@
     "messages": "Messages",
     "active": "Active",
     "expired": "Expired",
-    "messageBreakdown": "Received {received} · Sent {sent}"
+    "messageBreakdown": "Received {received} · Sent {sent}",
+    "viewMessages": "View messages",
+    "closeMessages": "Close message list",
+    "messageListDescription": "Click a message to view its body. Up to 200 recent messages are shown.",
+    "messagesLoadFailed": "Failed to load mailbox messages",
+    "messageLoadFailed": "Failed to load message body",
+    "loadingMessages": "Loading messages…",
+    "noMessages": "No messages in this mailbox.",
+    "to": "To",
+    "from": "From",
+    "sent": "Sent",
+    "received": "Received",
+    "loadingMessage": "Loading message body…",
+    "time": "Time",
+    "htmlBody": "HTML",
+    "textBody": "Plain text",
+    "emptyBody": "No plain-text body."
   }
 }

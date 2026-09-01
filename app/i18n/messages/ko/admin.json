@@ -93,6 +93,22 @@
     "messages": "메시지",
     "active": "활성",
     "expired": "만료됨",
-    "messageBreakdown": "수신 {received} · 발신 {sent}"
+    "messageBreakdown": "수신 {received} · 발신 {sent}",
+    "viewMessages": "메일 보기",
+    "closeMessages": "메일 목록 닫기",
+    "messageListDescription": "메일을 클릭하면 본문을 볼 수 있습니다. 최근 200개까지 표시합니다.",
+    "messagesLoadFailed": "메일 목록을 불러오지 못했습니다",
+    "messageLoadFailed": "메일 본문을 불러오지 못했습니다",
+    "loadingMessages": "메일을 불러오는 중…",
+    "noMessages": "이 메일함에 메일이 없습니다.",
+    "to": "받는 사람",
+    "from": "보낸 사람",
+    "sent": "발신",
+    "received": "수신",
+    "loadingMessage": "메일 본문을 불러오는 중…",
+    "time": "시간",
+    "htmlBody": "HTML 본문",
+    "textBody": "텍스트 본문",
+    "emptyBody": "텍스트 본문이 없습니다."
   }
 }

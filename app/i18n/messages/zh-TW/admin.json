@@ -93,6 +93,22 @@
     "messages": "郵件數量",
     "active": "使用中",
     "expired": "已過期",
-    "messageBreakdown": "收件 {received} · 寄件 {sent}"
+    "messageBreakdown": "收件 {received} · 寄件 {sent}",
+    "viewMessages": "查看郵件",
+    "closeMessages": "關閉郵件清單",
+    "messageListDescription": "點擊郵件即可查看正文，最多顯示最近 200 封。",
+    "messagesLoadFailed": "載入信箱郵件失敗",
+    "messageLoadFailed": "載入郵件正文失敗",
+    "loadingMessages": "正在載入郵件…",
+    "noMessages": "該信箱尚無郵件。",
+    "to": "收件者",
+    "from": "寄件者",
+    "sent": "已寄出",
+    "received": "已接收",
+    "loadingMessage": "正在載入郵件正文…",
+    "time": "時間",
+    "htmlBody": "HTML 正文",
+    "textBody": "純文字正文",
+    "emptyBody": "沒有純文字正文。"
   }
 }

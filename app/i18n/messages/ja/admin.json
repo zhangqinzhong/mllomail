@@ -93,6 +93,22 @@
     "messages": "メッセージ",
     "active": "有効",
     "expired": "期限切れ",
-    "messageBreakdown": "受信 {received} · 送信 {sent}"
+    "messageBreakdown": "受信 {received} · 送信 {sent}",
+    "viewMessages": "メールを見る",
+    "closeMessages": "メール一覧を閉じる",
+    "messageListDescription": "メールをクリックすると本文を表示します。最新200件まで表示します。",
+    "messagesLoadFailed": "メール一覧の読み込みに失敗しました",
+    "messageLoadFailed": "メール本文の読み込みに失敗しました",
+    "loadingMessages": "メールを読み込んでいます…",
+    "noMessages": "このメールボックスにメールはありません。",
+    "to": "宛先",
+    "from": "送信元",
+    "sent": "送信済み",
+    "received": "受信",
+    "loadingMessage": "本文を読み込んでいます…",
+    "time": "日時",
+    "htmlBody": "HTML 本文",
+    "textBody": "テキスト本文",
+    "emptyBody": "テキスト本文はありません。"
   }
 }
