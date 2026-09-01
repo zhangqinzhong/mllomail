@@ -26,7 +26,8 @@
     "save": "儲存",
     "quotaHelp": "額度留空表示使用全站或身分預設值；每日寄件額度為 0 表示不限量，-1 表示禁止寄件。",
     "useSiteDefaultValue": "全站預設：{value}",
-    "useRoleDefaultValue": "身分預設：{value}"
+    "useRoleDefaultValue": "身分預設：{value}",
+    "viewDetails": "查看詳情"
   },
   "roles": {
     "emperor": "皇帝",
@@ -70,5 +71,28 @@
   "settings": {
     "title": "全站設定",
     "description": "獨立設定網站行為和寄件額度，不再與使用者清單混在一起。"
+  },
+  "userDetail": {
+    "loadFailed": "載入使用者詳情失敗",
+    "back": "返回使用者管理",
+    "stats": {
+      "totalMailboxes": "全部信箱",
+      "activeMailboxes": "使用中信箱",
+      "expiredMailboxes": "已過期信箱",
+      "totalMessages": "全部郵件"
+    },
+    "inherited": "繼承預設值",
+    "custom": "個人覆寫值",
+    "mailboxesTitle": "使用者信箱",
+    "mailboxesDescription": "查看該使用者擁有的全部信箱地址及郵件數量。",
+    "noMailboxes": "該使用者尚無信箱。",
+    "address": "信箱地址",
+    "status": "狀態",
+    "createdAt": "建立時間",
+    "expiresAt": "過期時間",
+    "messages": "郵件數量",
+    "active": "使用中",
+    "expired": "已過期",
+    "messageBreakdown": "收件 {received} · 寄件 {sent}"
   }
 }

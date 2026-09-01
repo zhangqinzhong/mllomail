@@ -26,7 +26,8 @@
     "save": "Save",
     "quotaHelp": "Leave a quota blank to use the site or role default. A daily send limit of 0 means unlimited; -1 disables sending.",
     "useSiteDefaultValue": "Global: {value}",
-    "useRoleDefaultValue": "Role: {value}"
+    "useRoleDefaultValue": "Role: {value}",
+    "viewDetails": "Details"
   },
   "roles": {
     "emperor": "Emperor",
@@ -70,5 +71,28 @@
   "settings": {
     "title": "Global settings",
     "description": "Configure site behavior and outbound email limits independently from user management."
+  },
+  "userDetail": {
+    "loadFailed": "Failed to load user details",
+    "back": "Back to users",
+    "stats": {
+      "totalMailboxes": "All mailboxes",
+      "activeMailboxes": "Active mailboxes",
+      "expiredMailboxes": "Expired mailboxes",
+      "totalMessages": "All messages"
+    },
+    "inherited": "Inherited default",
+    "custom": "Individual override",
+    "mailboxesTitle": "User mailboxes",
+    "mailboxesDescription": "All mailbox addresses owned by this user and their message counts.",
+    "noMailboxes": "This user has no mailboxes.",
+    "address": "Address",
+    "status": "Status",
+    "createdAt": "Created",
+    "expiresAt": "Expires",
+    "messages": "Messages",
+    "active": "Active",
+    "expired": "Expired",
+    "messageBreakdown": "Received {received} · Sent {sent}"
   }
 }

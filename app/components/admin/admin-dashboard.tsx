@@ -1,10 +1,12 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import {
   Crown,
+  Eye,
   Gem,
   Loader2,
   RefreshCw,
@@ -89,6 +91,7 @@ function toEditableUser(user: AdminUser): EditableUser {
 
 export function AdminDashboard() {
   const t = useTranslations("admin")
+  const locale = useLocale()
   const { toast } = useToast()
   const [data, setData] = useState<AdminResponse | null>(null)
   const [editableUsers, setEditableUsers] = useState<Record<string, EditableUser>>({})
@@ -348,7 +351,15 @@ export function AdminDashboard() {
                           />
                         </td>
                         <td className="px-3 py-4 text-right">
-                          <SaveButton user={user} savingUserId={savingUserId} onSave={saveUser} label={t("users.save")} />
+                          <div className="flex justify-end gap-2">
+                            <Button asChild size="sm" variant="outline" className="gap-2">
+                              <Link href={`/${locale}/admin/users/${user.id}`}>
+                                <Eye className="h-4 w-4" />
+                                {t("users.viewDetails")}
+                              </Link>
+                            </Button>
+                            <SaveButton user={user} savingUserId={savingUserId} onSave={saveUser} label={t("users.save")} />
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -386,11 +397,19 @@ export function AdminDashboard() {
                         />
                       </Field>
                     </div>
-                    <div className="flex items-center justify-between border-t pt-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-3">
                       <span className="text-xs text-muted-foreground">
                         {t("users.mailboxes")}: <strong className="text-foreground">{user.activeMailboxes}</strong>
                       </span>
-                      <SaveButton user={user} savingUserId={savingUserId} onSave={saveUser} label={t("users.save")} />
+                      <div className="flex gap-2">
+                        <Button asChild size="sm" variant="outline" className="gap-2">
+                          <Link href={`/${locale}/admin/users/${user.id}`}>
+                            <Eye className="h-4 w-4" />
+                            {t("users.viewDetails")}
+                          </Link>
+                        </Button>
+                        <SaveButton user={user} savingUserId={savingUserId} onSave={saveUser} label={t("users.save")} />
+                      </div>
                     </div>
                   </div>
                 ))}

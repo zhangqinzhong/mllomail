@@ -26,7 +26,8 @@
     "save": "저장",
     "quotaHelp": "비워 두면 사이트 또는 역할 기본값을 사용합니다. 일일 한도 0은 무제한, -1은 발송 금지입니다.",
     "useSiteDefaultValue": "전체 기본값: {value}",
-    "useRoleDefaultValue": "역할 기본값: {value}"
+    "useRoleDefaultValue": "역할 기본값: {value}",
+    "viewDetails": "상세 보기"
   },
   "roles": {
     "emperor": "황제",
@@ -70,5 +71,28 @@
   "settings": {
     "title": "전체 설정",
     "description": "사이트 동작과 발송 한도를 사용자 관리와 별도로 설정합니다."
+  },
+  "userDetail": {
+    "loadFailed": "사용자 상세 정보를 불러오지 못했습니다",
+    "back": "사용자 관리로 돌아가기",
+    "stats": {
+      "totalMailboxes": "전체 메일함",
+      "activeMailboxes": "활성 메일함",
+      "expiredMailboxes": "만료된 메일함",
+      "totalMessages": "전체 메시지"
+    },
+    "inherited": "기본값 상속",
+    "custom": "개별 설정",
+    "mailboxesTitle": "사용자 메일함",
+    "mailboxesDescription": "이 사용자가 소유한 모든 주소와 메시지 수입니다.",
+    "noMailboxes": "이 사용자에게 메일함이 없습니다.",
+    "address": "주소",
+    "status": "상태",
+    "createdAt": "생성 시간",
+    "expiresAt": "만료 시간",
+    "messages": "메시지",
+    "active": "활성",
+    "expired": "만료됨",
+    "messageBreakdown": "수신 {received} · 발신 {sent}"
   }
 }

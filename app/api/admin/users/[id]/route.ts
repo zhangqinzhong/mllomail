@@ -1,9 +1,10 @@
 import { auth, assignRoleToUser, getUserRole } from "@/lib/auth"
 import { createDb } from "@/lib/db"
-import { roles, users } from "@/lib/schema"
+import { accounts, emails, messages, roles, users } from "@/lib/schema"
 import { ROLES, type Role } from "@/lib/permissions"
-import { eq } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 import { getRequestContext } from "@cloudflare/next-on-pages"
+import { EMAIL_CONFIG } from "@/config"
 
 export const runtime = "edge"
 
@@ -21,6 +22,121 @@ function isIntegerInRange(value: number | null | undefined, minimum: number, max
   return value === null || value === undefined || (
     Number.isInteger(value) && value >= minimum && value <= maximum
   )
+}
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return Response.json({ error: "未登录" }, { status: 401 })
+  }
+
+  if (await getUserRole(session.user.id) !== ROLES.EMPEROR) {
+    return Response.json({ error: "仅皇帝可以查看用户详情" }, { status: 403 })
+  }
+
+  const { id } = await params
+  const db = createDb()
+  const env = getRequestContext().env
+
+  const [user, accountRows, mailboxRows, messageCountRows, role, maxEmailsOverride, dailyLimitOverride, configuredMaxEmails, configuredRoleLimits] = await Promise.all([
+    db.query.users.findFirst({ where: eq(users.id, id) }),
+    db.select({ provider: accounts.provider }).from(accounts).where(eq(accounts.userId, id)),
+    db.select({
+      id: emails.id,
+      address: emails.address,
+      createdAt: emails.createdAt,
+      expiresAt: emails.expiresAt,
+    }).from(emails).where(eq(emails.userId, id)).orderBy(desc(emails.createdAt)),
+    db.select({
+      emailId: messages.emailId,
+      total: sql<number>`count(*)`,
+      received: sql<number>`sum(case when ${messages.type} = 'received' then 1 else 0 end)`,
+      sent: sql<number>`sum(case when ${messages.type} = 'sent' then 1 else 0 end)`,
+    })
+      .from(messages)
+      .innerJoin(emails, eq(messages.emailId, emails.id))
+      .where(eq(emails.userId, id))
+      .groupBy(messages.emailId),
+    getUserRole(id),
+    env.SITE_CONFIG.get(`USER_MAX_EMAILS:${id}`),
+    env.SITE_CONFIG.get(`USER_DAILY_SEND_LIMIT:${id}`),
+    env.SITE_CONFIG.get("MAX_EMAILS"),
+    env.SITE_CONFIG.get("EMAIL_ROLE_LIMITS"),
+  ])
+
+  if (!user) {
+    return Response.json({ error: "用户不存在" }, { status: 404 })
+  }
+
+  const userRole = role ?? ROLES.CIVILIAN
+  const parsedMaxEmails = Number(configuredMaxEmails)
+  const defaultMaxEmails = Number.isInteger(parsedMaxEmails) && parsedMaxEmails > 0
+    ? parsedMaxEmails
+    : EMAIL_CONFIG.MAX_ACTIVE_EMAILS
+
+  let customRoleLimits: { duke?: number; knight?: number } = {}
+  try {
+    customRoleLimits = configuredRoleLimits ? JSON.parse(configuredRoleLimits) : {}
+  } catch {
+    customRoleLimits = {}
+  }
+
+  const roleDailyLimits: Record<Role, number> = {
+    [ROLES.EMPEROR]: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.emperor,
+    [ROLES.DUKE]: Number.isInteger(customRoleLimits.duke)
+      ? customRoleLimits.duke!
+      : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.duke,
+    [ROLES.KNIGHT]: Number.isInteger(customRoleLimits.knight)
+      ? customRoleLimits.knight!
+      : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.knight,
+    [ROLES.CIVILIAN]: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.civilian,
+  }
+
+  const parsedMaxOverride = maxEmailsOverride === null ? null : Number(maxEmailsOverride)
+  const parsedDailyOverride = dailyLimitOverride === null ? null : Number(dailyLimitOverride)
+  const messageCounts = new Map(messageCountRows.map((row) => [row.emailId, {
+    total: Number(row.total),
+    received: Number(row.received),
+    sent: Number(row.sent),
+  }]))
+  const now = Date.now()
+  const mailboxes = mailboxRows.map((mailbox) => ({
+    ...mailbox,
+    active: mailbox.expiresAt.getTime() > now,
+    messages: messageCounts.get(mailbox.id) ?? { total: 0, received: 0, sent: 0 },
+  }))
+
+  return Response.json({
+    user: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      role: userRole,
+      providers: Array.from(new Set(accountRows.map((account) => account.provider))),
+    },
+    quotas: {
+      maxEmails: {
+        override: parsedMaxOverride,
+        effective: userRole === ROLES.EMPEROR ? null : (parsedMaxOverride ?? defaultMaxEmails),
+      },
+      dailySendLimit: {
+        override: parsedDailyOverride,
+        effective: parsedDailyOverride ?? roleDailyLimits[userRole],
+      },
+    },
+    stats: {
+      totalMailboxes: mailboxes.length,
+      activeMailboxes: mailboxes.filter((mailbox) => mailbox.active).length,
+      expiredMailboxes: mailboxes.filter((mailbox) => !mailbox.active).length,
+      totalMessages: mailboxes.reduce((total, mailbox) => total + mailbox.messages.total, 0),
+    },
+    mailboxes,
+  })
 }
 
 export async function PATCH(

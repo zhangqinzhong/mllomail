@@ -71,11 +71,12 @@
     "saveSuccess": "設定を保存しました",
     "saveFailed": "設定の保存に失敗しました",
     "unlimited": "無制限",
-    "disabled": "送信権限は無効です",
+    "disabled": "送信を禁止",
     "enabled": "送信権限が有効です",
     "panelDescription": "Resend と役割別の送信上限を設定します。",
     "limitHint": "-1 は送信禁止、0 は無制限、正の整数は1日の送信数です。",
-    "invalidLimit": "1日の送信上限は -1〜10000 の整数にしてください。"
+    "invalidLimit": "1日の送信上限は -1〜10000 の整数にしてください。",
+    "restoreDefault": "既定値に戻す"
   },
   "webhook": {
     "title": "Webhook 設定",

@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
-import { Zap, Eye, EyeOff } from "lucide-react"
+import { Zap, Eye, EyeOff, RotateCcw } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { EMAIL_CONFIG } from "@/config"
 
 interface EmailServiceConfig {
   enabled: boolean
@@ -203,7 +204,7 @@ export function EmailServiceConfig({ onSaved }: EmailServiceConfigProps = {}) {
                     }))
                   }}
                 />
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     size="sm"
@@ -225,6 +226,22 @@ export function EmailServiceConfig({ onSaved }: EmailServiceConfigProps = {}) {
                     }))}
                   >
                     {t("unlimited")}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="gap-1.5"
+                    onClick={() => setConfig((current) => ({
+                      ...current,
+                      roleLimits: {
+                        ...current.roleLimits,
+                        [role.key]: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS[role.key],
+                      },
+                    }))}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    {t("restoreDefault")}
                   </Button>
                 </div>
               </div>

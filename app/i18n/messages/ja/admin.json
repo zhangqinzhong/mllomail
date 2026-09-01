@@ -26,7 +26,8 @@
     "save": "保存",
     "quotaHelp": "空欄の場合はサイトまたは役割の既定値を使用します。送信上限 0 は無制限、-1 は送信禁止です。",
     "useSiteDefaultValue": "全体既定：{value}",
-    "useRoleDefaultValue": "役割既定：{value}"
+    "useRoleDefaultValue": "役割既定：{value}",
+    "viewDetails": "詳細を見る"
   },
   "roles": {
     "emperor": "皇帝",
@@ -70,5 +71,28 @@
   "settings": {
     "title": "全体設定",
     "description": "サイト動作と送信上限をユーザー管理とは別に設定します。"
+  },
+  "userDetail": {
+    "loadFailed": "ユーザー詳細の読み込みに失敗しました",
+    "back": "ユーザー管理に戻る",
+    "stats": {
+      "totalMailboxes": "全メールボックス",
+      "activeMailboxes": "有効",
+      "expiredMailboxes": "期限切れ",
+      "totalMessages": "全メッセージ"
+    },
+    "inherited": "既定値を継承",
+    "custom": "個別設定",
+    "mailboxesTitle": "ユーザーのメールボックス",
+    "mailboxesDescription": "このユーザーが所有する全アドレスとメッセージ数です。",
+    "noMailboxes": "このユーザーにはメールボックスがありません。",
+    "address": "アドレス",
+    "status": "状態",
+    "createdAt": "作成日時",
+    "expiresAt": "有効期限",
+    "messages": "メッセージ",
+    "active": "有効",
+    "expired": "期限切れ",
+    "messageBreakdown": "受信 {received} · 送信 {sent}"
   }
 }
