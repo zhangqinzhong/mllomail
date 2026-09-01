@@ -65,6 +65,16 @@ export async function POST(request: Request) {
 
   try {
     const config = await request.json() as EmailServiceConfig
+    const roleLimits = [config.roleLimits?.duke, config.roleLimits?.knight]
+    if (roleLimits.some((limit) => (
+      limit === undefined || !Number.isInteger(limit) || limit < -1 || limit > 10000
+    ))) {
+      return NextResponse.json(
+        { error: "每日发件额度必须是 -1 到 10000 的整数" },
+        { status: 400 }
+      )
+    }
+
     const env = getRequestContext().env
     const existingApiKey = await env.SITE_CONFIG.get("RESEND_API_KEY")
     const nextApiKey = config.preserveExistingApiKey ? (existingApiKey || "") : (config.apiKey || "")

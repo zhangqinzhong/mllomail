@@ -8,11 +8,8 @@ import { signOut } from "next-auth/react"
 import { Github, Settings, Crown, Sword, User2, Gem, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { WebhookConfig } from "./webhook-config"
-import { PromotePanel } from "./promote-panel"
-import { EmailServiceConfig } from "./email-service-config"
 import { useRolePermission } from "@/hooks/use-role-permission"
 import { PERMISSIONS, ROLES } from "@/lib/permissions"
-import { WebsiteConfigPanel } from "./website-config-panel"
 import { ApiKeyPanel } from "./api-key-panel"
 
 interface ProfileCardProps {
@@ -67,8 +64,6 @@ export function ProfileCard({ user }: ProfileCardProps) {
   const router = useRouter()
   const { checkPermission, hasRole } = useRolePermission()
   const canManageWebhook = checkPermission(PERMISSIONS.MANAGE_WEBHOOK)
-  const canPromote = checkPermission(PERMISSIONS.PROMOTE_USER)
-  const canManageConfig = checkPermission(PERMISSIONS.MANAGE_CONFIG)
   const isEmperor = hasRole(ROLES.EMPEROR)
 
   return (
@@ -146,9 +141,6 @@ export function ProfileCard({ user }: ProfileCardProps) {
         </div>
       )}
 
-      {canManageConfig && <WebsiteConfigPanel />}
-      {canManageConfig && <EmailServiceConfig />}
-      {canPromote && <PromotePanel />}
       {canManageWebhook && <ApiKeyPanel />}
 
       <div className="flex flex-col sm:flex-row gap-4 px-1">

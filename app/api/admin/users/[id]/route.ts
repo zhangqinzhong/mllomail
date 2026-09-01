@@ -10,7 +10,7 @@ export const runtime = "edge"
 type EditableRole = typeof ROLES.DUKE | typeof ROLES.KNIGHT | typeof ROLES.CIVILIAN
 
 interface UpdateUserRequest {
-  role?: EditableRole
+  role?: Role
   maxEmails?: number | null
   dailySendLimit?: number | null
 }
@@ -46,12 +46,16 @@ export async function PATCH(
   }
 
   const targetRole = await getUserRole(id)
-  if (targetRole === ROLES.EMPEROR) {
+  if (payload.role !== undefined && payload.role !== ROLES.EMPEROR && !EDITABLE_ROLES.includes(payload.role)) {
+    return Response.json({ error: "角色不合法" }, { status: 400 })
+  }
+
+  if (targetRole === ROLES.EMPEROR && payload.role !== undefined && payload.role !== ROLES.EMPEROR) {
     return Response.json({ error: "皇帝账号不能在后台降级" }, { status: 400 })
   }
 
-  if (payload.role !== undefined && !EDITABLE_ROLES.includes(payload.role)) {
-    return Response.json({ error: "角色不合法" }, { status: 400 })
+  if (targetRole !== ROLES.EMPEROR && payload.role === ROLES.EMPEROR) {
+    return Response.json({ error: "不能通过用户面板授予皇帝身份" }, { status: 400 })
   }
 
   if (!isIntegerInRange(payload.maxEmails, 1, 1000)) {
@@ -62,7 +66,7 @@ export async function PATCH(
     return Response.json({ error: "每日发件限制必须是 -1 到 10000 的整数" }, { status: 400 })
   }
 
-  if (payload.role !== undefined && payload.role !== targetRole) {
+  if (payload.role !== undefined && payload.role !== ROLES.EMPEROR && payload.role !== targetRole) {
     let role = await db.query.roles.findFirst({ where: eq(roles.name, payload.role) })
     if (!role) {
       const descriptions: Record<EditableRole, string> = {

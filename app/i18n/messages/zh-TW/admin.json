@@ -53,5 +53,22 @@
     "unlimited": "不限量",
     "disabled": "禁止寄件",
     "perDay": "每日 {count} 封"
+  },
+  "nav": {
+    "overview": "概覽",
+    "users": "使用者管理",
+    "settings": "全站設定"
+  },
+  "overview": {
+    "description": "查看服務運作概況和目前生效的預設值。使用者管理與全站設定已拆分為獨立頁面。",
+    "defaultsTitle": "目前生效的預設值",
+    "defaultsDescription": "未設定個人額度的使用者會繼承這些數值。",
+    "quickActions": "快速入口",
+    "manageUsers": "進入使用者管理",
+    "manageSettings": "開啟全站設定"
+  },
+  "settings": {
+    "title": "全站設定",
+    "description": "獨立設定網站行為和寄件額度，不再與使用者清單混在一起。"
   }
 }

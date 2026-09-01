@@ -7,17 +7,12 @@ import {
   Crown,
   Gem,
   Loader2,
-  Mail,
   RefreshCw,
   Save,
   Search,
   Send,
-  Settings,
-  ShieldCheck,
   Sword,
   UserRound,
-  Users,
-  type LucideIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,8 +27,6 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { ROLES, type Role } from "@/lib/permissions"
-import { WebsiteConfigPanel } from "@/components/profile/website-config-panel"
-import { EmailServiceConfig } from "@/components/profile/email-service-config"
 
 type EditableRole = typeof ROLES.DUKE | typeof ROLES.KNIGHT | typeof ROLES.CIVILIAN
 
@@ -150,7 +143,7 @@ export function AdminDashboard() {
 
   const saveUser = async (user: AdminUser) => {
     const editable = editableUsers[user.id]
-    if (!editable || user.role === ROLES.EMPEROR) return
+    if (!editable) return
 
     const parseOptionalNumber = (value: string) => {
       const normalized = value.trim()
@@ -262,7 +255,7 @@ export function AdminDashboard() {
       value={editableUsers[user.id]?.[field] ?? ""}
       onChange={(event) => updateEditableUser(user.id, { [field]: event.target.value })}
       placeholder={placeholder}
-      disabled={user.role === ROLES.EMPEROR}
+      disabled={user.role === ROLES.EMPEROR && field === "maxEmails"}
       className="h-9 w-full min-w-24"
     />
   )
@@ -278,65 +271,13 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-br from-amber-500/10 via-background to-violet-500/10 p-6 shadow-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-amber-500/15 p-3 text-amber-600 dark:text-amber-300">
-              <Crown className="h-8 w-8" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-wide sm:text-3xl">{t("title")}</h1>
-              <p className="mt-1 text-sm text-muted-foreground sm:text-base">{t("description")}</p>
-            </div>
-          </div>
-          <Button variant="outline" className="gap-2" onClick={() => fetchUsers()}>
-            <RefreshCw className="h-4 w-4" />
-            {t("refresh")}
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={Users} label={t("stats.totalUsers")} value={data?.stats.totalUsers ?? 0} />
-        <StatCard icon={Mail} label={t("stats.activeMailboxes")} value={data?.stats.activeMailboxes ?? 0} />
-        <StatCard icon={ShieldCheck} label={t("stats.privilegedUsers")} value={
-          (data?.stats.roleCounts.duke ?? 0) + (data?.stats.roleCounts.knight ?? 0)
-        } />
-        <StatCard icon={Crown} label={t("stats.emperors")} value={data?.stats.roleCounts.emperor ?? 0} />
-      </div>
-
-      <Card className="border-primary/15">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
-              <Settings className="h-5 w-5" />
-            </div>
-            <div>
-              <CardTitle className="text-xl">{t("config.title")}</CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">{t("config.description")}</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <ConfigValue label={t("config.globalMailboxLimit")} value={String(data?.defaults.maxEmails ?? "—")} />
-          <ConfigValue label={t("config.dukeDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.duke ?? -1)} />
-          <ConfigValue label={t("config.knightDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.knight ?? -1)} />
-          <ConfigValue label={t("config.civilianDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.civilian ?? -1)} />
-        </CardContent>
-      </Card>
-
-      <div className="grid items-start gap-6 xl:grid-cols-2">
-        <WebsiteConfigPanel onSaved={() => fetchUsers(false)} />
-        <EmailServiceConfig onSaved={() => fetchUsers(false)} />
-      </div>
-
-      <Card className="border-primary/15">
+      <Card className="rounded-2xl border-primary/15 shadow-sm">
         <CardHeader className="gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <CardTitle className="text-xl">{t("users.title")}</CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">{t("users.description")}</p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative min-w-60">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -357,6 +298,10 @@ export function AdminDashboard() {
                 ))}
               </SelectContent>
             </Select>
+            <Button variant="outline" className="gap-2" onClick={() => fetchUsers()}>
+              <RefreshCw className="h-4 w-4" />
+              {t("refresh")}
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -383,12 +328,16 @@ export function AdminDashboard() {
                         <td className="px-3 py-4"><RoleEditor user={user} /></td>
                         <td className="px-3 py-4 font-medium">{user.activeMailboxes}</td>
                         <td className="px-3 py-4">
-                          <QuotaInput
-                            user={user}
-                            field="maxEmails"
-                            min={1}
-                            placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
-                          />
+                          {user.role === ROLES.EMPEROR ? (
+                            <span className="text-sm text-muted-foreground">{t("limits.unlimited")}</span>
+                          ) : (
+                            <QuotaInput
+                              user={user}
+                              field="maxEmails"
+                              min={1}
+                              placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
+                            />
+                          )}
                         </td>
                         <td className="px-3 py-4">
                           <QuotaInput
@@ -414,27 +363,29 @@ export function AdminDashboard() {
                       <UserIdentity user={user} />
                       {user.role === ROLES.EMPEROR && <RoleBadge role={user.role} />}
                     </div>
-                    {user.role !== ROLES.EMPEROR && (
-                      <div className="grid gap-3 sm:grid-cols-3">
-                        <Field label={t("users.role")}><RoleEditor user={user} /></Field>
-                        <Field label={t("users.maxEmails")}>
-                          <QuotaInput
-                            user={user}
-                            field="maxEmails"
-                            min={1}
-                            placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
-                          />
-                        </Field>
-                        <Field label={t("users.dailySendLimit")}>
-                          <QuotaInput
-                            user={user}
-                            field="dailySendLimit"
-                            min={-1}
-                            placeholder={t("users.useRoleDefaultValue", { value: formatDailyLimit(inheritedDailyLimit(user)) })}
-                          />
-                        </Field>
-                      </div>
-                    )}
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {user.role !== ROLES.EMPEROR && (
+                        <>
+                          <Field label={t("users.role")}><RoleEditor user={user} /></Field>
+                          <Field label={t("users.maxEmails")}>
+                            <QuotaInput
+                              user={user}
+                              field="maxEmails"
+                              min={1}
+                              placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
+                            />
+                          </Field>
+                        </>
+                      )}
+                      <Field label={t("users.dailySendLimit")}>
+                        <QuotaInput
+                          user={user}
+                          field="dailySendLimit"
+                          min={-1}
+                          placeholder={t("users.useRoleDefaultValue", { value: formatDailyLimit(inheritedDailyLimit(user)) })}
+                        />
+                      </Field>
+                    </div>
                     <div className="flex items-center justify-between border-t pt-3">
                       <span className="text-xs text-muted-foreground">
                         {t("users.mailboxes")}: <strong className="text-foreground">{user.activeMailboxes}</strong>
@@ -455,29 +406,6 @@ export function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
-    </div>
-  )
-}
-
-function StatCard({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: number }) {
-  return (
-    <Card className="border-primary/10">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className="rounded-xl bg-primary/10 p-3 text-primary"><Icon className="h-5 w-5" /></div>
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="mt-1 text-2xl font-bold">{value}</p>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-function ConfigValue({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border bg-muted/20 p-4">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-2 text-xl font-semibold">{value}</p>
     </div>
   )
 }
@@ -535,7 +463,7 @@ function SaveButton({
     <Button
       size="sm"
       className="gap-2"
-      disabled={user.role === ROLES.EMPEROR || savingUserId !== null}
+      disabled={savingUserId !== null}
       onClick={() => onSave(user)}
     >
       {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}

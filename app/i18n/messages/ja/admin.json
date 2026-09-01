@@ -53,5 +53,22 @@
     "unlimited": "無制限",
     "disabled": "送信禁止",
     "perDay": "1日 {count} 通"
+  },
+  "nav": {
+    "overview": "概要",
+    "users": "ユーザー管理",
+    "settings": "全体設定"
+  },
+  "overview": {
+    "description": "サービスの状況と現在有効な既定値を確認します。ユーザー管理と全体設定は別ページです。",
+    "defaultsTitle": "有効な既定値",
+    "defaultsDescription": "個別設定がないユーザーはこれらの値を継承します。",
+    "quickActions": "クイック操作",
+    "manageUsers": "ユーザー管理を開く",
+    "manageSettings": "全体設定を開く"
+  },
+  "settings": {
+    "title": "全体設定",
+    "description": "サイト動作と送信上限をユーザー管理とは別に設定します。"
   }
 }

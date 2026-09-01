@@ -72,7 +72,10 @@
     "saveFailed": "儲存設定失敗",
     "unlimited": "無限制",
     "disabled": "未啟用發件權限",
-    "enabled": "已啟用發件權限"
+    "enabled": "已啟用發件權限",
+    "panelDescription": "設定 Resend 服務及不同身分的主動寄件額度。",
+    "limitHint": "輸入 -1 表示禁止寄件，0 表示不限量，正整數表示每日封數。",
+    "invalidLimit": "每日寄件額度必須是 -1 到 10000 的整數。"
   },
   "webhook": {
     "title": "Webhook 設定",

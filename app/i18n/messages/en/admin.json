@@ -53,5 +53,22 @@
     "unlimited": "Unlimited",
     "disabled": "Disabled",
     "perDay": "{count} per day"
+  },
+  "nav": {
+    "overview": "Overview",
+    "users": "Users",
+    "settings": "Global settings"
+  },
+  "overview": {
+    "description": "A clean overview of service activity and effective defaults. User management and global settings are kept on separate pages.",
+    "defaultsTitle": "Effective defaults",
+    "defaultsDescription": "These are the values inherited by users without individual overrides.",
+    "quickActions": "Quick actions",
+    "manageUsers": "Manage users",
+    "manageSettings": "Open global settings"
+  },
+  "settings": {
+    "title": "Global settings",
+    "description": "Configure site behavior and outbound email limits independently from user management."
   }
 }

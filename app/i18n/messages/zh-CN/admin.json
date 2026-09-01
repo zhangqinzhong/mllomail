@@ -53,5 +53,22 @@
     "unlimited": "不限量",
     "disabled": "禁止发件",
     "perDay": "每日 {count} 封"
+  },
+  "nav": {
+    "overview": "概览",
+    "users": "用户管理",
+    "settings": "全站设置"
+  },
+  "overview": {
+    "description": "查看服务运行概况和当前生效的默认值。用户管理与全站设置已经拆分为独立页面。",
+    "defaultsTitle": "当前生效的默认值",
+    "defaultsDescription": "未设置个人额度的用户会继承这些数值。",
+    "quickActions": "快捷入口",
+    "manageUsers": "进入用户管理",
+    "manageSettings": "打开全站设置"
+  },
+  "settings": {
+    "title": "全站设置",
+    "description": "独立配置网站行为和发件额度，不再与用户列表混在一起。"
   }
 }

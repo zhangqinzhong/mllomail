@@ -121,10 +121,15 @@ export function WebsiteConfigPanel({ onSaved }: WebsiteConfigPanelProps = {}) {
   }
 
   return (
-    <div className="bg-background rounded-lg border-2 border-primary/20 p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Settings className="w-5 h-5 text-primary" />
-        <h2 className="text-lg font-semibold">{t("title")}</h2>
+    <div className="rounded-2xl border bg-background p-6 shadow-sm">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
+          <Settings className="h-5 w-5" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold">{t("title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("description")}</p>
+        </div>
       </div>
 
       <div className="space-y-4">

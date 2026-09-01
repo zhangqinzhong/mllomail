@@ -53,5 +53,22 @@
     "unlimited": "무제한",
     "disabled": "발송 금지",
     "perDay": "하루 {count}개"
+  },
+  "nav": {
+    "overview": "개요",
+    "users": "사용자 관리",
+    "settings": "전체 설정"
+  },
+  "overview": {
+    "description": "서비스 현황과 현재 적용 중인 기본값을 확인합니다. 사용자 관리와 전체 설정은 별도 페이지입니다.",
+    "defaultsTitle": "현재 적용 기본값",
+    "defaultsDescription": "개별 설정이 없는 사용자는 이 값을 상속합니다.",
+    "quickActions": "빠른 작업",
+    "manageUsers": "사용자 관리 열기",
+    "manageSettings": "전체 설정 열기"
+  },
+  "settings": {
+    "title": "전체 설정",
+    "description": "사이트 동작과 발송 한도를 사용자 관리와 별도로 설정합니다."
   }
 }

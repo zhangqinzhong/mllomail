@@ -72,7 +72,10 @@
     "saveFailed": "Failed to save configuration",
     "unlimited": "Unlimited",
     "disabled": "Sending permission not enabled",
-    "enabled": "Sending permission enabled"
+    "enabled": "Sending permission enabled",
+    "panelDescription": "Configure Resend and role-based outbound email limits.",
+    "limitHint": "Enter -1 to disable sending, 0 for unlimited, or a positive daily limit.",
+    "invalidLimit": "The daily limit must be an integer from -1 to 10000."
   },
   "webhook": {
     "title": "Webhook Configuration",
