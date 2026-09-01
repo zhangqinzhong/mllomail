@@ -12,6 +12,7 @@ import {
   Save,
   Search,
   Send,
+  Settings,
   ShieldCheck,
   Sword,
   UserRound,
@@ -31,6 +32,8 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { ROLES, type Role } from "@/lib/permissions"
+import { WebsiteConfigPanel } from "@/components/profile/website-config-panel"
+import { EmailServiceConfig } from "@/components/profile/email-service-config"
 
 type EditableRole = typeof ROLES.DUKE | typeof ROLES.KNIGHT | typeof ROLES.CIVILIAN
 
@@ -51,6 +54,10 @@ type AdminUser = {
 
 type AdminResponse = {
   users: AdminUser[]
+  defaults: {
+    maxEmails: number
+    dailySendLimits: Record<Role, number>
+  }
   stats: {
     totalUsers: number
     activeMailboxes: number
@@ -194,6 +201,17 @@ export function AdminDashboard() {
 
   const roleName = (role: Role) => t(`roles.${role}`)
 
+  const formatDailyLimit = (limit: number) => {
+    if (limit === 0) return t("limits.unlimited")
+    if (limit === -1) return t("limits.disabled")
+    return t("limits.perDay", { count: limit })
+  }
+
+  const inheritedDailyLimit = (user: AdminUser) => {
+    const role = editableUsers[user.id]?.role ?? user.role
+    return data?.defaults.dailySendLimits[role] ?? -1
+  }
+
   const RoleBadge = ({ role }: { role: Role }) => {
     const Icon = ROLE_ICONS[role]
     return (
@@ -288,6 +306,31 @@ export function AdminDashboard() {
       </div>
 
       <Card className="border-primary/15">
+        <CardHeader>
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
+              <Settings className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">{t("config.title")}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{t("config.description")}</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <ConfigValue label={t("config.globalMailboxLimit")} value={String(data?.defaults.maxEmails ?? "—")} />
+          <ConfigValue label={t("config.dukeDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.duke ?? -1)} />
+          <ConfigValue label={t("config.knightDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.knight ?? -1)} />
+          <ConfigValue label={t("config.civilianDailyLimit")} value={formatDailyLimit(data?.defaults.dailySendLimits.civilian ?? -1)} />
+        </CardContent>
+      </Card>
+
+      <div className="grid items-start gap-6 xl:grid-cols-2">
+        <WebsiteConfigPanel onSaved={() => fetchUsers(false)} />
+        <EmailServiceConfig onSaved={() => fetchUsers(false)} />
+      </div>
+
+      <Card className="border-primary/15">
         <CardHeader className="gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <CardTitle className="text-xl">{t("users.title")}</CardTitle>
@@ -340,10 +383,20 @@ export function AdminDashboard() {
                         <td className="px-3 py-4"><RoleEditor user={user} /></td>
                         <td className="px-3 py-4 font-medium">{user.activeMailboxes}</td>
                         <td className="px-3 py-4">
-                          <QuotaInput user={user} field="maxEmails" min={1} placeholder={t("users.useSiteDefault")} />
+                          <QuotaInput
+                            user={user}
+                            field="maxEmails"
+                            min={1}
+                            placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
+                          />
                         </td>
                         <td className="px-3 py-4">
-                          <QuotaInput user={user} field="dailySendLimit" min={-1} placeholder={t("users.useRoleDefault")} />
+                          <QuotaInput
+                            user={user}
+                            field="dailySendLimit"
+                            min={-1}
+                            placeholder={t("users.useRoleDefaultValue", { value: formatDailyLimit(inheritedDailyLimit(user)) })}
+                          />
                         </td>
                         <td className="px-3 py-4 text-right">
                           <SaveButton user={user} savingUserId={savingUserId} onSave={saveUser} label={t("users.save")} />
@@ -365,10 +418,20 @@ export function AdminDashboard() {
                       <div className="grid gap-3 sm:grid-cols-3">
                         <Field label={t("users.role")}><RoleEditor user={user} /></Field>
                         <Field label={t("users.maxEmails")}>
-                          <QuotaInput user={user} field="maxEmails" min={1} placeholder={t("users.useSiteDefault")} />
+                          <QuotaInput
+                            user={user}
+                            field="maxEmails"
+                            min={1}
+                            placeholder={t("users.useSiteDefaultValue", { value: data?.defaults.maxEmails ?? "—" })}
+                          />
                         </Field>
                         <Field label={t("users.dailySendLimit")}>
-                          <QuotaInput user={user} field="dailySendLimit" min={-1} placeholder={t("users.useRoleDefault")} />
+                          <QuotaInput
+                            user={user}
+                            field="dailySendLimit"
+                            min={-1}
+                            placeholder={t("users.useRoleDefaultValue", { value: formatDailyLimit(inheritedDailyLimit(user)) })}
+                          />
                         </Field>
                       </div>
                     )}
@@ -407,6 +470,15 @@ function StatCard({ icon: Icon, label, value }: { icon: LucideIcon; label: strin
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+function ConfigValue({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border bg-muted/20 p-4">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-2 text-xl font-semibold">{value}</p>
+    </div>
   )
 }
 

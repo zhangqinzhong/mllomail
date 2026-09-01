@@ -24,7 +24,9 @@
     "useSiteDefault": "使用全站預設值",
     "useRoleDefault": "使用身分預設值",
     "save": "儲存",
-    "quotaHelp": "額度留空表示使用全站或身分預設值；每日寄件額度為 0 表示不限量，-1 表示禁止寄件。"
+    "quotaHelp": "額度留空表示使用全站或身分預設值；每日寄件額度為 0 表示不限量，-1 表示禁止寄件。",
+    "useSiteDefaultValue": "全站預設：{value}",
+    "useRoleDefaultValue": "身分預設：{value}"
   },
   "roles": {
     "emperor": "皇帝",
@@ -38,5 +40,18 @@
     "saveSuccess": "使用者設定已儲存",
     "invalidMaxEmails": "信箱數量上限必須是 1 到 1000 的整數",
     "invalidDailyLimit": "每日寄件額度必須是 -1 到 10000 的整數"
+  },
+  "config": {
+    "title": "全站設定",
+    "description": "這裡直接顯示使用者繼承的目前預設值；下方可以修改網站設定和 Resend 寄件設定。",
+    "globalMailboxLimit": "預設信箱數量上限",
+    "dukeDailyLimit": "公爵每日寄件額度",
+    "knightDailyLimit": "騎士每日寄件額度",
+    "civilianDailyLimit": "平民每日寄件額度"
+  },
+  "limits": {
+    "unlimited": "不限量",
+    "disabled": "禁止寄件",
+    "perDay": "每日 {count} 封"
   }
 }

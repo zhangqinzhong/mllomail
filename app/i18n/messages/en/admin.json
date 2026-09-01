@@ -24,7 +24,9 @@
     "useSiteDefault": "Site default",
     "useRoleDefault": "Role default",
     "save": "Save",
-    "quotaHelp": "Leave a quota blank to use the site or role default. A daily send limit of 0 means unlimited; -1 disables sending."
+    "quotaHelp": "Leave a quota blank to use the site or role default. A daily send limit of 0 means unlimited; -1 disables sending.",
+    "useSiteDefaultValue": "Global: {value}",
+    "useRoleDefaultValue": "Role: {value}"
   },
   "roles": {
     "emperor": "Emperor",
@@ -38,5 +40,18 @@
     "saveSuccess": "User settings saved",
     "invalidMaxEmails": "Mailbox limit must be an integer from 1 to 1000",
     "invalidDailyLimit": "Daily send limit must be an integer from -1 to 10000"
+  },
+  "config": {
+    "title": "Global configuration",
+    "description": "Current inherited values are shown here. Edit site settings and the Resend service below.",
+    "globalMailboxLimit": "Default mailbox limit",
+    "dukeDailyLimit": "Duke daily send limit",
+    "knightDailyLimit": "Knight daily send limit",
+    "civilianDailyLimit": "Civilian daily send limit"
+  },
+  "limits": {
+    "unlimited": "Unlimited",
+    "disabled": "Disabled",
+    "perDay": "{count} per day"
   }
 }

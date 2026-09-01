@@ -24,7 +24,9 @@
     "useSiteDefault": "サイト既定値",
     "useRoleDefault": "役割の既定値",
     "save": "保存",
-    "quotaHelp": "空欄の場合はサイトまたは役割の既定値を使用します。送信上限 0 は無制限、-1 は送信禁止です。"
+    "quotaHelp": "空欄の場合はサイトまたは役割の既定値を使用します。送信上限 0 は無制限、-1 は送信禁止です。",
+    "useSiteDefaultValue": "全体既定：{value}",
+    "useRoleDefaultValue": "役割既定：{value}"
   },
   "roles": {
     "emperor": "皇帝",
@@ -38,5 +40,18 @@
     "saveSuccess": "ユーザー設定を保存しました",
     "invalidMaxEmails": "メールボックス上限は 1〜1000 の整数にしてください",
     "invalidDailyLimit": "1日の送信上限は -1〜10000 の整数にしてください"
+  },
+  "config": {
+    "title": "全体設定",
+    "description": "ユーザーが継承する現在の既定値を表示します。下でサイト設定と Resend 送信設定を変更できます。",
+    "globalMailboxLimit": "既定のメールボックス上限",
+    "dukeDailyLimit": "公爵の1日送信上限",
+    "knightDailyLimit": "騎士の1日送信上限",
+    "civilianDailyLimit": "平民の1日送信上限"
+  },
+  "limits": {
+    "unlimited": "無制限",
+    "disabled": "送信禁止",
+    "perDay": "1日 {count} 通"
   }
 }

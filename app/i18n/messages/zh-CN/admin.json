@@ -24,7 +24,9 @@
     "useSiteDefault": "使用全站默认值",
     "useRoleDefault": "使用身份默认值",
     "save": "保存",
-    "quotaHelp": "额度留空表示使用全站或身份默认值；每日发件额度为 0 表示不限量，-1 表示禁止发件。"
+    "quotaHelp": "额度留空表示使用全站或身份默认值；每日发件额度为 0 表示不限量，-1 表示禁止发件。",
+    "useSiteDefaultValue": "全站默认：{value}",
+    "useRoleDefaultValue": "身份默认：{value}"
   },
   "roles": {
     "emperor": "皇帝",
@@ -38,5 +40,18 @@
     "saveSuccess": "用户配置已保存",
     "invalidMaxEmails": "邮箱数量上限必须是 1 到 1000 的整数",
     "invalidDailyLimit": "每日发件额度必须是 -1 到 10000 的整数"
+  },
+  "config": {
+    "title": "全站配置",
+    "description": "这里直接显示用户继承的当前默认值；下方可以修改网站配置和 Resend 发件配置。",
+    "globalMailboxLimit": "默认邮箱数量上限",
+    "dukeDailyLimit": "公爵每日发件额度",
+    "knightDailyLimit": "骑士每日发件额度",
+    "civilianDailyLimit": "平民每日发件额度"
+  },
+  "limits": {
+    "unlimited": "不限量",
+    "disabled": "禁止发件",
+    "perDay": "每日 {count} 封"
   }
 }

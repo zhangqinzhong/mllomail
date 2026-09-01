@@ -19,7 +19,11 @@ import {
 } from "@/components/ui/select"
 import { EMAIL_CONFIG } from "@/config"
 
-export function WebsiteConfigPanel() {
+interface WebsiteConfigPanelProps {
+  onSaved?: () => void | Promise<void>
+}
+
+export function WebsiteConfigPanel({ onSaved }: WebsiteConfigPanelProps = {}) {
   const t = useTranslations("profile.website")
   const tCard = useTranslations("profile.card")
   const [defaultRole, setDefaultRole] = useState<string>("")
@@ -104,6 +108,7 @@ export function WebsiteConfigPanel() {
         title: t("saveSuccess"),
         description: t("saveSuccess"),
       })
+      await onSaved?.()
     } catch (error) {
       toast({
         title: t("saveFailed"),

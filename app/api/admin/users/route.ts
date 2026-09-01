@@ -4,6 +4,7 @@ import { accounts, emails, roles, userRoles, users } from "@/lib/schema"
 import { ROLES, type Role } from "@/lib/permissions"
 import { and, eq, gt, isNotNull, sql } from "drizzle-orm"
 import { getRequestContext } from "@cloudflare/next-on-pages"
+import { EMAIL_CONFIG } from "@/config"
 
 export const runtime = "edge"
 
@@ -28,7 +29,14 @@ export async function GET() {
   const env = getRequestContext().env
   const now = new Date()
 
-  const [userRows, roleRows, accountRows, mailboxRows] = await Promise.all([
+  const [
+    userRows,
+    roleRows,
+    accountRows,
+    mailboxRows,
+    configuredMaxEmails,
+    configuredRoleLimits,
+  ] = await Promise.all([
     db.select({
       id: users.id,
       name: users.name,
@@ -51,7 +59,32 @@ export async function GET() {
       .from(emails)
       .where(and(isNotNull(emails.userId), gt(emails.expiresAt, now)))
       .groupBy(emails.userId),
+    env.SITE_CONFIG.get("MAX_EMAILS"),
+    env.SITE_CONFIG.get("EMAIL_ROLE_LIMITS"),
   ])
+
+  const parsedMaxEmails = Number(configuredMaxEmails)
+  const maxEmails = Number.isInteger(parsedMaxEmails) && parsedMaxEmails > 0
+    ? parsedMaxEmails
+    : EMAIL_CONFIG.MAX_ACTIVE_EMAILS
+
+  let roleLimits: { duke?: number; knight?: number } = {}
+  try {
+    roleLimits = configuredRoleLimits ? JSON.parse(configuredRoleLimits) : {}
+  } catch {
+    roleLimits = {}
+  }
+
+  const dailySendLimits: Record<Role, number> = {
+    [ROLES.EMPEROR]: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.emperor,
+    [ROLES.DUKE]: Number.isInteger(roleLimits.duke)
+      ? roleLimits.duke!
+      : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.duke,
+    [ROLES.KNIGHT]: Number.isInteger(roleLimits.knight)
+      ? roleLimits.knight!
+      : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.knight,
+    [ROLES.CIVILIAN]: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.civilian,
+  }
 
   const roleByUser = new Map<string, Role>()
   for (const row of roleRows) {
@@ -108,6 +141,10 @@ export async function GET() {
 
   return Response.json({
     users: result,
+    defaults: {
+      maxEmails,
+      dailySendLimits,
+    },
     stats: {
       totalUsers: result.length,
       activeMailboxes: result.reduce((total, user) => total + user.activeMailboxes, 0),

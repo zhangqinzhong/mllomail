@@ -20,7 +20,11 @@ interface EmailServiceConfig {
   }
 }
 
-export function EmailServiceConfig() {
+interface EmailServiceConfigProps {
+  onSaved?: () => void | Promise<void>
+}
+
+export function EmailServiceConfig({ onSaved }: EmailServiceConfigProps = {}) {
   const t = useTranslations("profile.emailService")
   const tCard = useTranslations("profile.card")
   const tSend = useTranslations("emails.send")
@@ -84,6 +88,7 @@ export function EmailServiceConfig() {
         title: t("saveSuccess"),
         description: t("saveSuccess"),
       })
+      await onSaved?.()
     } catch (error) {
       toast({
         title: t("saveFailed"),

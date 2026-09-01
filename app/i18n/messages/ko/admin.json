@@ -24,7 +24,9 @@
     "useSiteDefault": "사이트 기본값",
     "useRoleDefault": "역할 기본값",
     "save": "저장",
-    "quotaHelp": "비워 두면 사이트 또는 역할 기본값을 사용합니다. 일일 한도 0은 무제한, -1은 발송 금지입니다."
+    "quotaHelp": "비워 두면 사이트 또는 역할 기본값을 사용합니다. 일일 한도 0은 무제한, -1은 발송 금지입니다.",
+    "useSiteDefaultValue": "전체 기본값: {value}",
+    "useRoleDefaultValue": "역할 기본값: {value}"
   },
   "roles": {
     "emperor": "황제",
@@ -38,5 +40,18 @@
     "saveSuccess": "사용자 설정을 저장했습니다",
     "invalidMaxEmails": "메일함 한도는 1~1000 사이의 정수여야 합니다",
     "invalidDailyLimit": "일일 발송 한도는 -1~10000 사이의 정수여야 합니다"
+  },
+  "config": {
+    "title": "전체 설정",
+    "description": "사용자가 상속하는 현재 기본값입니다. 아래에서 사이트 설정과 Resend 발송 설정을 변경할 수 있습니다.",
+    "globalMailboxLimit": "기본 메일함 한도",
+    "dukeDailyLimit": "공작 일일 발송 한도",
+    "knightDailyLimit": "기사 일일 발송 한도",
+    "civilianDailyLimit": "평민 일일 발송 한도"
+  },
+  "limits": {
+    "unlimited": "무제한",
+    "disabled": "발송 금지",
+    "perDay": "하루 {count}개"
   }
 }
