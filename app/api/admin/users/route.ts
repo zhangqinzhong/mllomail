@@ -1,10 +1,8 @@
-import { auth, getUserRole } from "@/lib/auth"
-import { createDb } from "@/lib/db"
-import { accounts, emails, roles, userRoles, users } from "@/lib/schema"
+import { auth } from "@/lib/auth"
 import { ROLES, type Role } from "@/lib/permissions"
-import { and, eq, gt, isNotNull, sql } from "drizzle-orm"
 import { getRequestContext } from "@cloudflare/next-on-pages"
 import { EMAIL_CONFIG } from "@/config"
+import { readKvValues } from "@/lib/kv-read"
 
 export const runtime = "edge"
 
@@ -21,47 +19,27 @@ export async function GET() {
     return Response.json({ error: "未登录" }, { status: 401 })
   }
 
-  if (await getUserRole(session.user.id) !== ROLES.EMPEROR) {
+  if (session.user.roles?.[0]?.name !== ROLES.EMPEROR) {
     return Response.json({ error: "仅皇帝可以访问后台" }, { status: 403 })
   }
 
-  const db = createDb()
   const env = getRequestContext().env
-  const now = new Date()
-
-  const [
-    userRows,
-    roleRows,
-    accountRows,
-    mailboxRows,
-    configuredMaxEmails,
-    configuredRoleLimits,
-  ] = await Promise.all([
-    db.select({
-      id: users.id,
-      name: users.name,
-      username: users.username,
-      email: users.email,
-      image: users.image,
-    }).from(users),
-    db.select({
-      userId: userRoles.userId,
-      roleName: roles.name,
-    }).from(userRoles).innerJoin(roles, eq(userRoles.roleId, roles.id)),
-    db.select({
-      userId: accounts.userId,
-      provider: accounts.provider,
-    }).from(accounts),
-    db.select({
-      userId: emails.userId,
-      count: sql<number>`count(*)`,
-    })
-      .from(emails)
-      .where(and(isNotNull(emails.userId), gt(emails.expiresAt, now)))
-      .groupBy(emails.userId),
-    env.SITE_CONFIG.get("MAX_EMAILS"),
-    env.SITE_CONFIG.get("EMAIL_ROLE_LIMITS"),
+  // Keep authorization fresh through auth(); batch metadata reads to avoid ORM
+  // query construction and one network/decoding operation per table.
+  const [tables, settings] = await Promise.all([
+    env.DB.batch([
+      env.DB.prepare('SELECT id, name, username, email, image FROM user'),
+      env.DB.prepare('SELECT ur.user_id AS userId, r.name AS roleName FROM user_role ur JOIN role r ON r.id = ur.role_id'),
+      env.DB.prepare('SELECT userId, provider FROM account'),
+      env.DB.prepare('SELECT userId, count(*) AS count FROM email WHERE userId IS NOT NULL AND expires_at > ? GROUP BY userId').bind(Date.now()),
+    ]),
+    readKvValues(env.SITE_CONFIG, ["MAX_EMAILS", "EMAIL_ROLE_LIMITS"]),
   ])
+  const userRows = tables[0].results as {id:string;name:string|null;username:string|null;email:string|null;image:string|null}[]
+  const roleRows = tables[1].results as {userId:string;roleName:Role}[]
+  const accountRows = tables[2].results as {userId:string;provider:string}[]
+  const mailboxRows = tables[3].results as {userId:string;count:number}[]
+  const [configuredMaxEmails, configuredRoleLimits] = settings
 
   const parsedMaxEmails = Number(configuredMaxEmails)
   const maxEmails = Number.isInteger(parsedMaxEmails) && parsedMaxEmails > 0
@@ -103,12 +81,13 @@ export async function GET() {
     if (row.userId) mailboxCountByUser.set(row.userId, Number(row.count))
   }
 
-  const result = await Promise.all(userRows.map(async (user) => {
-    const [maxEmails, dailySendLimit] = await Promise.all([
-      env.SITE_CONFIG.get(`USER_MAX_EMAILS:${user.id}`),
-      env.SITE_CONFIG.get(`USER_DAILY_SEND_LIMIT:${user.id}`),
-    ])
-
+  const overrideKeys = userRows.flatMap(user => [
+    `USER_MAX_EMAILS:${user.id}`, `USER_DAILY_SEND_LIMIT:${user.id}`,
+  ])
+  const overrides = await readKvValues(env.SITE_CONFIG, overrideKeys)
+  const result = userRows.map((user, index) => {
+    const maxEmails = overrides[index * 2]
+    const dailySendLimit = overrides[index * 2 + 1]
     return {
       ...user,
       role: roleByUser.get(user.id) ?? ROLES.CIVILIAN,
@@ -119,7 +98,7 @@ export async function GET() {
         dailySendLimit: dailySendLimit === null ? null : Number(dailySendLimit),
       },
     }
-  }))
+  })
 
   result.sort((a, b) => {
     const roleDifference = ROLE_ORDER[a.role] - ROLE_ORDER[b.role]

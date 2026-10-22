@@ -1,76 +1,24 @@
-import { createDb } from "@/lib/db"
-import { and, eq, gt, lt, or, sql } from "drizzle-orm"
-import { NextResponse } from "next/server"
-import { emails } from "@/lib/schema"
-import { encodeCursor, decodeCursor } from "@/lib/cursor"
-import { getUserId } from "@/lib/apiKey"
-
-export const runtime = "edge"
-
-const PAGE_SIZE = 20
-
-export async function GET(request: Request) {
-  const userId = await getUserId()
-
-  const { searchParams } = new URL(request.url)
-  const cursor = searchParams.get('cursor')
-  
-  const db = createDb()
-
-  try {
-    const baseConditions = and(
-      eq(emails.userId, userId!),
-      gt(emails.expiresAt, new Date())
-    )
-
-    const totalResult = await db.select({ count: sql<number>`count(*)` })
-      .from(emails)
-      .where(baseConditions)
-    const totalCount = Number(totalResult[0].count)
-
-    const conditions = [baseConditions]
-
-    if (cursor) {
-      const { timestamp, id } = decodeCursor(cursor)
-      conditions.push(
-        or(
-          lt(emails.createdAt, new Date(timestamp)),
-          and(
-            eq(emails.createdAt, new Date(timestamp)),
-            lt(emails.id, id)
-          )
-        )
-      )
-    }
-
-    const results = await db.query.emails.findMany({
-      where: and(...conditions),
-      orderBy: (emails, { desc }) => [
-        desc(emails.createdAt),
-        desc(emails.id)
-      ],
-      limit: PAGE_SIZE + 1
-    })
-    
-    const hasMore = results.length > PAGE_SIZE
-    const nextCursor = hasMore 
-      ? encodeCursor(
-          results[PAGE_SIZE - 1].createdAt.getTime(),
-          results[PAGE_SIZE - 1].id
-        )
-      : null
-    const emailList = hasMore ? results.slice(0, PAGE_SIZE) : results
-
-    return NextResponse.json({ 
-      emails: emailList,
-      nextCursor,
-      total: totalCount
-    })
-  } catch (error) {
-    console.error('Failed to fetch user emails:', error)
-    return NextResponse.json(
-      { error: "Failed to fetch emails" },
-      { status: 500 }
-    )
-  }
-} 
+import {getRequestContext} from '@cloudflare/next-on-pages'
+import {encodeCursor,decodeCursor} from '@/lib/cursor'
+import {getUserId} from '@/lib/apiKey'
+export const runtime='edge'
+const PAGE_SIZE=20
+interface MailboxRow {id:string;address:string;userId:string;created_at:number;expires_at:number}
+export async function GET(request:Request){
+ const userId=await getUserId()
+ try {
+  const db=getRequestContext().env.DB;const now=Date.now()
+  const cursor=new URL(request.url).searchParams.get('cursor')
+  const where='userId = ? AND expires_at > ?'
+  const parameters:(string|number)[]=[userId!,now]
+  let pageCondition=''
+  if(cursor){const {timestamp,id}=decodeCursor(cursor);pageCondition=' AND (created_at < ? OR (created_at = ? AND id < ?))';parameters.push(timestamp,timestamp,id)}
+  const [total,rows]=await db.batch<MailboxRow & {total:number}>([
+   db.prepare('SELECT count(*) AS total FROM email WHERE '+where).bind(userId!,now),
+   db.prepare('SELECT id,address,userId,created_at,expires_at FROM email WHERE '+where+pageCondition+' ORDER BY created_at DESC,id DESC LIMIT ?').bind(...parameters,PAGE_SIZE+1),
+  ])
+  const results=rows.results
+  const hasMore=results.length>PAGE_SIZE;const page=results.slice(0,PAGE_SIZE)
+  return Response.json({emails:page.map(row=>({id:row.id,address:row.address,userId:row.userId,createdAt:new Date(row.created_at).toISOString(),expiresAt:new Date(row.expires_at).toISOString()})),nextCursor:hasMore?encodeCursor(page[PAGE_SIZE-1].created_at,page[PAGE_SIZE-1].id):null,total:Number(total.results[0].total)})
+ }catch(error){console.error('Failed to fetch user emails:',error);return Response.json({error:'Failed to fetch emails'},{status:500})}
+}

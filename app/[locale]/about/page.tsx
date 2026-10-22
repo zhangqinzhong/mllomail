@@ -2,10 +2,16 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { Clock, Code2, LogIn, Mail, ShieldCheck, Share2 } from "lucide-react"
-import type { Locale } from "@/i18n/config"
+import { i18n, type Locale } from "@/i18n/config"
 import { LegalFooter } from "@/components/layout/legal-footer"
 
-export const runtime = "edge"
+// Public pages are rendered at build time; account state is fetched client-side.
+export function generateStaticParams() {
+  return i18n.locales.map(locale => ({ locale }))
+}
+
+export const dynamic = "error"
+export const dynamicParams = false
 
 const description =
   "MlloMail is a temporary email service for protecting a primary inbox, receiving short-lived messages, sharing mailboxes, and developer testing."

@@ -1,3 +1,4 @@
+import {readKvValues} from "./kv-read"
 import { getRequestContext } from "@cloudflare/next-on-pages"
 
 interface TurnstileConfig {
@@ -8,11 +9,7 @@ interface TurnstileConfig {
 
 export async function getTurnstileConfig(): Promise<TurnstileConfig> {
   const env = getRequestContext().env
-  const [enabled, siteKey, secretKey] = await Promise.all([
-    env.SITE_CONFIG.get("TURNSTILE_ENABLED"),
-    env.SITE_CONFIG.get("TURNSTILE_SITE_KEY"),
-    env.SITE_CONFIG.get("TURNSTILE_SECRET_KEY"),
-  ])
+  const [enabled, siteKey, secretKey] = await readKvValues(env.SITE_CONFIG, ["TURNSTILE_ENABLED","TURNSTILE_SITE_KEY","TURNSTILE_SECRET_KEY"])
 
   return {
     enabled: enabled === "true",

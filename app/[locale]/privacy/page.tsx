@@ -1,9 +1,15 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import type { Locale } from "@/i18n/config"
+import { i18n, type Locale } from "@/i18n/config"
 import { LegalFooter } from "@/components/layout/legal-footer"
 
-export const runtime = "edge"
+// Public pages are rendered at build time; account state is fetched client-side.
+export function generateStaticParams() {
+  return i18n.locales.map(locale => ({ locale }))
+}
+
+export const dynamic = "error"
+export const dynamicParams = false
 
 const copy = {
   en: {

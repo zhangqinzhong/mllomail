@@ -1,3 +1,5 @@
+export const runtime = "edge"
+
 import { getSharedMessage } from "@/lib/shared-data"
 import { SharedErrorPage } from "@/components/emails/shared-error-page"
 import { SharedMessagePageClient } from "./page-client"

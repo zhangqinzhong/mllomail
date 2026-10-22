@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from "next-intl"
 import { notFound } from "next/navigation"
-import { getTranslations } from "next-intl/server"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 import { i18n, type Locale } from "@/i18n/config"
 import type { Metadata, Viewport } from "next"
 import { FloatMenu } from "@/components/float-menu"
@@ -11,7 +11,6 @@ import { zpix } from "../fonts"
 import "../globals.css"
 import { Providers } from "../providers"
 
-export const runtime = "edge"
 
 export const viewport: Viewport = {
   themeColor: '#826DD9',
@@ -112,6 +111,7 @@ export default async function LocaleLayout({
     notFound()
   }
 
+  setRequestLocale(locale)
   const messages = await getMessages(locale)
 
   return (

@@ -55,6 +55,7 @@ export async function GET(
   const { searchParams } = new URL(request.url)
   const cursorStr = searchParams.get('cursor')
   const messageType = searchParams.get('type')
+  const summaryOnly = searchParams.get('summary') === '1'
 
   try {
     const db = createDb()
@@ -119,6 +120,8 @@ export async function GET(
     const orderByTime = messageType === 'sent' ? messages.sentAt : messages.receivedAt
     
     const results = await db.query.messages.findMany({
+      // The inbox list does not display message bodies; keep the full API response by default.
+      columns: summaryOnly ? { content: false, html: false } : undefined,
       where: and(...conditions),
       orderBy: (messages, { desc }) => [
         desc(orderByTime),

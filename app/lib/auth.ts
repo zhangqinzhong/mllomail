@@ -64,30 +64,20 @@ export async function assignRoleToUser(db: Db, userId: string, roleId: string) {
     })
 }
 
-export async function getUserRole(userId: string): Promise<Role | null> {
-  if (!userId) return null
+async function loadUserRoleNames(userId: string): Promise<Role[]> {
+  const result = await getRequestContext().env.DB.prepare(
+    'SELECT r.name FROM user_role ur JOIN role r ON r.id = ur.role_id WHERE ur.user_id = ?'
+  ).bind(userId).all<{name: Role}>()
+  return result.results.map(row => row.name)
+}
 
-  const db = createDb()
-  const userRoleRecords = await db.query.userRoles.findMany({
-    where: eq(userRoles.userId, userId),
-    with: { role: true },
-  })
-  return (userRoleRecords[0]?.role.name as Role | undefined) ?? null
+export async function getUserRole(userId: string): Promise<Role | null> {
+  return userId ? (await loadUserRoleNames(userId))[0] ?? null : null
 }
 
 export async function checkPermission(permission: Permission) {
   const userId = await getUserId()
-
-  if (!userId) return false
-
-  const db = createDb()
-  const userRoleRecords = await db.query.userRoles.findMany({
-    where: eq(userRoles.userId, userId),
-    with: { role: true },
-  })
-
-  const userRoleNames = userRoleRecords.map(ur => ur.role.name)
-  return hasPermission(userRoleNames as Role[], permission)
+  return userId ? hasPermission(await loadUserRoleNames(userId), permission) : false
 }
 
 export const {
@@ -201,33 +191,21 @@ export const {
         session.user.username = token.username as string
         session.user.image = token.image as string
 
-        const db = createDb()
-        let userRoleRecords = await db.query.userRoles.findMany({
-          where: eq(userRoles.userId, session.user.id),
-          with: { role: true },
-        })
-
-        if (!userRoleRecords.length) {
+        const env = getRequestContext().env
+        const [roleRows, accountRows] = await env.DB.batch([
+          env.DB.prepare('SELECT r.name FROM user_role ur JOIN role r ON r.id = ur.role_id WHERE ur.user_id = ?').bind(session.user.id),
+          env.DB.prepare('SELECT provider FROM account WHERE userId = ?').bind(session.user.id),
+        ])
+        let roleNames = (roleRows.results as {name: Role}[]).map(row => row.name)
+        if (!roleNames.length) {
+          const db = createDb()
           const defaultRole = await getDefaultRole()
           const role = await findOrCreateRole(db, defaultRole)
           await assignRoleToUser(db, session.user.id, role.id)
-          userRoleRecords = [{
-            userId: session.user.id,
-            roleId: role.id,
-            createdAt: new Date(),
-            role: role
-          }]
+          roleNames = [role.name as Role]
         }
-
-        session.user.roles = userRoleRecords.map(ur => ({
-          name: ur.role.name,
-        }))
-
-        const userAccounts = await db.query.accounts.findMany({
-          where: eq(accounts.userId, session.user.id),
-        })
-
-        session.user.providers = userAccounts.map(account => account.provider)
+        session.user.roles = roleNames.map(name => ({ name }))
+        session.user.providers = (accountRows.results as {provider:string}[]).map(account => account.provider)
       }
 
       return session

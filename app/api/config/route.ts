@@ -1,3 +1,4 @@
+import {readKvValues} from "@/lib/kv-read"
 import { PERMISSIONS, Role, ROLES } from "@/lib/permissions"
 import { getRequestContext } from "@cloudflare/next-on-pages"
 import { EMAIL_CONFIG } from "@/config"
@@ -38,18 +39,7 @@ export async function GET() {
     sourceLinkEnabled,
     sourceLinkUrl,
     sourceLinkLabel
-  ] = await Promise.all([
-    env.SITE_CONFIG.get("DEFAULT_ROLE"),
-    env.SITE_CONFIG.get("EMAIL_DOMAINS"),
-    env.SITE_CONFIG.get("ADMIN_CONTACT"),
-    env.SITE_CONFIG.get("MAX_EMAILS"),
-    env.SITE_CONFIG.get("TURNSTILE_ENABLED"),
-    env.SITE_CONFIG.get("TURNSTILE_SITE_KEY"),
-    env.SITE_CONFIG.get("TURNSTILE_SECRET_KEY"),
-    env.SITE_CONFIG.get("SOURCE_LINK_ENABLED"),
-    env.SITE_CONFIG.get("SOURCE_LINK_URL"),
-    env.SITE_CONFIG.get("SOURCE_LINK_LABEL")
-  ])
+  ] = await readKvValues(env.SITE_CONFIG, ["DEFAULT_ROLE", "EMAIL_DOMAINS", "ADMIN_CONTACT", "MAX_EMAILS", "TURNSTILE_ENABLED", "TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY", "SOURCE_LINK_ENABLED", "SOURCE_LINK_URL", "SOURCE_LINK_LABEL"])
 
   return Response.json({
     defaultRole: defaultRole || ROLES.CIVILIAN,

@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 import { i18n, type Locale } from "@/i18n/config"
-import { PERMISSIONS } from "@/lib/permissions"
-import { checkPermission } from "@/lib/auth"
-import { Permission } from "@/lib/permissions"
+import { PERMISSIONS, hasPermission } from "@/lib/permissions"
+import { Permission, Role } from "@/lib/permissions"
 import { handleApiKeyAuth } from "@/lib/apiKey"
 
 const API_PERMISSIONS: Record<string, Permission> = {
@@ -19,31 +18,35 @@ export async function middleware(request: Request) {
   const pathname = url.pathname
 
   if (pathname.startsWith('/api')) {
-    if (pathname.startsWith('/api/auth')) {
-      return NextResponse.next()
+    // Never trust an identity header supplied by the caller.
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.delete("X-User-Id")
+    if (pathname.startsWith('/api/auth') || (pathname === '/api/public-share' && request.method === 'GET')) {
+      return NextResponse.next({ request: { headers: requestHeaders } })
     }
-
-    request.headers.delete("X-User-Id")
     const apiKey = request.headers.get("X-API-Key")
     if (apiKey) {
       return handleApiKeyAuth(apiKey, pathname)
     }
 
     const session = await auth()
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "未授权" },
         { status: 401 }
       )
     }
 
+    requestHeaders.set("X-User-Id", session.user.id)
+    const authenticatedNext = () => NextResponse.next({ request: { headers: requestHeaders } })
+
     if (pathname === '/api/config' && request.method === 'GET') {
-      return NextResponse.next()
+      return authenticatedNext()
     }
 
     for (const [route, permission] of Object.entries(API_PERMISSIONS)) {
       if (pathname.startsWith(route)) {
-        const hasAccess = await checkPermission(permission)
+        const hasAccess = hasPermission((session.user.roles ?? []).map(role => role.name as Role), permission)
 
         if (!hasAccess) {
           return NextResponse.json(
@@ -54,7 +57,7 @@ export async function middleware(request: Request) {
         break
       }
     }
-    return NextResponse.next()
+    return authenticatedNext()
   }
 
   // Keep the public OAuth homepage on the root URL without a redirect.

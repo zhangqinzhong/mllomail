@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:pages": "npx @cloudflare/next-on-pages",
+    "build:pages": "npx vercel build && node scripts/prepare-static-functions.mjs && npx @cloudflare/next-on-pages --skip-build && node scripts/prepare-pages-output.mjs",
     "db:migrate-local": "tsx scripts/migrate.ts local",
     "db:migrate-remote": "tsx scripts/migrate.ts remote",
     "webhook-test-server": "bun run scripts/webhook-test-server.ts",
@@ -16,7 +16,8 @@
     "test:cleanup": "curl http://localhost:8787/__scheduled",
     "deploy:email": "wrangler deploy --config wrangler.email.json",
     "deploy:cleanup": "wrangler deploy --config wrangler.cleanup.json",
-    "deploy:pages": "npm run build:pages && node scripts/prepare-pages-output.mjs && wrangler pages deploy .vercel/output/static --branch master"
+    "deploy:pages": "npm run build:pages && wrangler pages deploy .vercel/output/static --project-name mllomail --branch master",
+    "test:cpu": "node --test tests/*.test.cjs"
   },
   "type": "module",
   "dependencies": {

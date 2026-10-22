@@ -1,29 +1,7 @@
-import { LoginForm } from "@/components/auth/login-form"
-import { auth } from "@/lib/auth"
-import { redirect } from "next/navigation"
-import type { Locale } from "@/i18n/config"
-import { getTurnstileConfig } from "@/lib/turnstile"
+import { LoginPageContent } from "@/components/pages/account-pages"
+import {i18n} from "@/i18n/config"
 
-export const runtime = "edge"
-
-export default async function LoginPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale: localeFromParams } = await params
-  const locale = localeFromParams as Locale
-  const session = await auth()
-  
-  if (session?.user) {
-    redirect(`/${locale}`)
-  }
-
-  const turnstile = await getTurnstileConfig()
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <LoginForm turnstile={{ enabled: turnstile.enabled, siteKey: turnstile.siteKey }} />
-    </div>
-  )
-}
+export const dynamic = "error"
+export const dynamicParams = false
+export function generateStaticParams(){return i18n.locales.map(locale=>({locale}))}
+export default function Page(){return <LoginPageContent/>}

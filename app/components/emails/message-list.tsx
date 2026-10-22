@@ -71,6 +71,7 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
   const fetchMessages = async (cursor?: string) => {
     try {
       const url = new URL(`/api/emails/${email.id}`, window.location.origin)
+      url.searchParams.set("summary", "1")
       if (messageType === 'sent') {
         url.searchParams.set('type', 'sent')
       }
@@ -114,7 +115,7 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
   const startPolling = () => {
     stopPolling()
     pollTimeoutRef.current = setInterval(() => {
-      if (!refreshing && !loadingMore) {
+      if (!document.hidden && !refreshing && !loadingMore) {
         fetchMessages()
       }
     }, EMAIL_CONFIG.POLL_INTERVAL)

@@ -3,11 +3,17 @@ import { Shield, Share2, Clock, Code2 } from "lucide-react"
 import { ActionButton } from "@/components/home/action-button"
 import { FeatureCard } from "@/components/home/feature-card"
 import { getTranslations } from "next-intl/server"
-import type { Locale } from "@/i18n/config"
+import { i18n, type Locale } from "@/i18n/config"
 import { LegalFooter } from "@/components/layout/legal-footer"
 import { PublicAppInfo } from "@/components/home/public-app-info"
 
-export const runtime = "edge"
+// Public pages are rendered at build time; account state is fetched client-side.
+export function generateStaticParams() {
+  return i18n.locales.map(locale => ({ locale }))
+}
+
+export const dynamic = "error"
+export const dynamicParams = false
 
 export default async function Home({
   params,

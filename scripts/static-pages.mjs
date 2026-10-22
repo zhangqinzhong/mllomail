@@ -1,0 +1,1 @@
+export const staticPageRoutes = ['/[locale]', '/[locale]/about', '/[locale]/privacy', '/[locale]/terms', '/[locale]/login', '/[locale]/moe', '/[locale]/profile', '/[locale]/docs', '/[locale]/admin', '/[locale]/admin/settings', '/[locale]/admin/users', '/[locale]/admin/user', '/[locale]/share', '/[locale]/message']
