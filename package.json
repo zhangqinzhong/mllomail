@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:pages": "npx vercel build && node scripts/prepare-static-functions.mjs && npx @cloudflare/next-on-pages --skip-build && node scripts/prepare-pages-output.mjs",
+    "build:pages": "node scripts/prepare-pages-build.mjs && npx vercel build && node scripts/prepare-static-functions.mjs && npx @cloudflare/next-on-pages --skip-build && node scripts/prepare-pages-output.mjs",
     "db:migrate-local": "tsx scripts/migrate.ts local",
     "db:migrate-remote": "tsx scripts/migrate.ts remote",
     "webhook-test-server": "bun run scripts/webhook-test-server.ts",
