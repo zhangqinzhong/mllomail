@@ -1,3 +1,4 @@
+import { getSiteBaseUrl } from "@/lib/seo"
 import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
@@ -16,14 +17,8 @@ export const dynamicParams = false
 const description =
   "MlloMail is a temporary email service for protecting a primary inbox, receiving short-lived messages, sharing mailboxes, and developer testing."
 
-function getBaseUrl() {
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.CUSTOM_DOMAIN
-  if (!configuredBaseUrl) return "http://localhost:3000"
-  return (/^https?:\/\//i.test(configuredBaseUrl) ? configuredBaseUrl : `https://${configuredBaseUrl}`).replace(/\/$/, "")
-}
-
 export async function generateMetadata(): Promise<Metadata> {
-  const homepage = `${getBaseUrl()}/en/about`
+  const homepage = `${getSiteBaseUrl()}/en/about`
 
   return {
     title: "MlloMail",

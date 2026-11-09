@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { getPageAlternates } from "@/lib/seo"
 import { Header } from "@/components/layout/header"
 import { Shield, Share2, Clock, Code2 } from "lucide-react"
 import { ActionButton } from "@/components/home/action-button"
@@ -14,6 +16,23 @@ export function generateStaticParams() {
 
 export const dynamic = "error"
 export const dynamicParams = false
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "metadata" })
+  const alternates = getPageAlternates(locale as Locale)
+  return {
+    alternates,
+    openGraph: {
+      type: "website",
+      locale: locale === "zh-CN" ? "zh_CN" : locale === "zh-TW" ? "zh_TW" : locale,
+      url: String(alternates.canonical),
+      title: t("title"),
+      description: t("description"),
+      siteName: "MlloMail",
+    },
+  }
+}
 
 export default async function Home({
   params,

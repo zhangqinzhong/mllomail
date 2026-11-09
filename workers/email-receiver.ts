@@ -11,15 +11,14 @@ const handleEmail = async (message: ForwardableEmailMessage, env: Env) => {
 
   const parsedMessage = await PostalMime.parse(message.raw)
 
-  console.log("parsedMessage:", parsedMessage)
-
+  // Log fixed events only. Mail fields and raw errors can contain private data.
   try {
     const targetEmail = await db.query.emails.findFirst({
       where: eq(sql`LOWER(${emails.address})`, message.to.toLowerCase())
     })
 
     if (!targetEmail) {
-      console.error(`Email not found: ${message.to}`)
+      console.error('Email not found')
       return
     }
 
@@ -51,20 +50,26 @@ const handleEmail = async (message: ForwardableEmailMessage, env: Env) => {
             toAddress: targetEmail.address
           } as EmailMessage
         })
-      } catch (error) {
-        console.error('Failed to send webhook:', error)
+      } catch {
+        console.error('Failed to send webhook')
       }
     }
 
-    console.log(`Email processed: ${parsedMessage.subject}`)
-  } catch (error) {
-    console.error('Failed to process email:', error)
+    console.log('Email processed')
+  } catch {
+    console.error('Failed to process email')
   }
 }
 
 const worker = {
   async email(message: ForwardableEmailMessage, env: Env): Promise<void> {
-    await handleEmail(message, env)
+    try {
+      await handleEmail(message, env)
+    } catch {
+      // Preserve initialization/parse failures without exposing the original
+      // error (or its cause) in the runtime's unhandled-exception logs.
+      throw new Error('Failed to initialize or parse email')
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import { getPageAlternates } from "@/lib/seo"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { i18n, type Locale } from "@/i18n/config"
@@ -53,7 +54,19 @@ function getCopy(locale: Locale): Copy {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const content = getCopy(locale as Locale)
-  return { title: `${content.title} | MlloMail`, description: content.intro }
+  const alternates = getPageAlternates(locale as Locale, "/terms")
+  return {
+    title: `${content.title} | MlloMail`,
+    description: content.intro,
+    alternates,
+    openGraph: {
+      type: "website",
+      title: `${content.title} | MlloMail`,
+      description: content.intro,
+      siteName: "MlloMail",
+      url: String(alternates.canonical),
+    },
+  }
 }
 
 export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {

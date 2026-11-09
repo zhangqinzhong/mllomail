@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { i18n, type Locale } from "@/i18n/config"
 import type { Metadata, Viewport } from "next"
+import { getSiteBaseUrl } from "@/lib/seo"
 import { FloatMenu } from "@/components/float-menu"
 import { ThemeProvider } from "@/components/theme/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
@@ -45,18 +46,7 @@ export async function generateMetadata({
   const locale = localeFromParams as Locale
   const t = await getTranslations({ locale, namespace: "metadata" })
 
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.CUSTOM_DOMAIN
-  const baseUrl = configuredBaseUrl
-    ? (/^https?:\/\//i.test(configuredBaseUrl) ? configuredBaseUrl : `https://${configuredBaseUrl}`).replace(/\/$/, "")
-    : "http://localhost:3000"
-  
-  // Generate hreflang links for all supported locales
-  const languages: Record<string, string> = {}
-  i18n.locales.forEach((loc) => {
-    languages[loc] = loc === i18n.defaultLocale ? baseUrl : `${baseUrl}/${loc}`
-  })
-
-  const canonicalUrl = locale === i18n.defaultLocale ? baseUrl : `${baseUrl}/${locale}`
+  const baseUrl = getSiteBaseUrl()
 
   return {
     metadataBase: new URL(baseUrl),
@@ -77,7 +67,6 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       locale: locale === "zh-CN" ? "zh_CN" : locale === "zh-TW" ? "zh_TW" : locale,
-      url: canonicalUrl,
       title: t("title"),
       description: t("description"),
       siteName: "MlloMail",
@@ -86,10 +75,6 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-    },
-    alternates: {
-      canonical: canonicalUrl,
-      languages,
     },
     manifest: '/manifest.json',
     icons: [
