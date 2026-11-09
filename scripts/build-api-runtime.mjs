@@ -1,6 +1,7 @@
 import {build} from 'esbuild'
 import {readdirSync} from 'node:fs'
-import {resolve} from 'node:path'
+import {resolve, dirname} from 'node:path'
+import {createRequire} from 'node:module'
 export async function buildApiRuntime(outputDir) {
  const files=[]
  function walk(dir){for(const e of readdirSync(dir,{withFileTypes:true})){const path=resolve(dir,e.name);if(e.isDirectory())walk(path);else if(e.name==='route.ts')files.push(path)}}
@@ -59,7 +60,14 @@ export async function buildApiRuntime(outputDir) {
   });
  }
  `
+ // Resolve Auth.js internals from next-auth's own dependency, including pnpm's
+ // isolated layout. Never assume transitive packages are hoisted at the root.
+ const require = createRequire(import.meta.url)
+ const authRequire = createRequire(require.resolve('next-auth'))
+ const authCoreEntry = authRequire.resolve('@auth/core')
+ const authCoreRoot = dirname(authCoreEntry)
+ const cookiePath = createRequire(authCoreEntry).resolve('cookie')
  const contextPath=resolve('scripts/worker-runtime/context.mjs')
- await build({stdin:{contents:source,resolveDir:process.cwd(),sourcefile:'native-api-entry.mjs'},outfile:resolve(outputDir,'api-runtime.mjs'),bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,external:['node:*'],define:{'process.env':'nativeEnv'},inject:[contextPath],plugins:[{name:'next-api-compat',setup(b){b.onResolve({filter:/^next-auth$/},()=>({path:resolve('scripts/worker-runtime/auth.mjs')}));b.onResolve({filter:/^(next\/(server|headers|navigation)(\.js)?|@cloudflare\/next-on-pages)$/},()=>({path:contextPath}))}}]})
+ await build({stdin:{contents:source,resolveDir:process.cwd(),sourcefile:'native-api-entry.mjs'},outfile:resolve(outputDir,'api-runtime.mjs'),bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,external:['node:*'],define:{'process.env':'nativeEnv'},inject:[contextPath],plugins:[{name:'next-api-compat',setup(b){b.onResolve({filter:/^@mllomail\/auth-cookie$/},()=>({path:cookiePath}));b.onResolve({filter:/^@mllomail\/auth-core\//},args=>({path:resolve(authCoreRoot,args.path.slice('@mllomail/auth-core/'.length))}));b.onResolve({filter:/^next-auth$/},()=>({path:resolve('scripts/worker-runtime/auth.mjs')}));b.onResolve({filter:/^(next\/(server|headers|navigation)(\.js)?|@cloudflare\/next-on-pages)$/},()=>({path:contextPath}))}}]})
  console.log('Bundled native API handlers:',files.length)
 }

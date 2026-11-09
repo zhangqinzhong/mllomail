@@ -1,11 +1,11 @@
 import NextAuth from '../../node_modules/next-auth/index.js'
 import {setEnvDefaults, reqWithEnvURL} from '../../node_modules/next-auth/lib/env.js'
 import {getToken} from 'next-auth/jwt'
-import {init} from '../../node_modules/@auth/core/lib/init.js'
-import {session as sessionAction} from '../../node_modules/@auth/core/lib/actions/session.js'
-import {SessionStore} from '../../node_modules/@auth/core/lib/utils/cookie.js'
-import {toResponse} from '../../node_modules/@auth/core/lib/utils/web.js'
-import {parse} from '../../node_modules/@auth/core/lib/vendored/cookie.js'
+import {init} from '@mllomail/auth-core/lib/init.js'
+import {session as sessionAction} from '@mllomail/auth-core/lib/actions/session.js'
+import {SessionStore} from '@mllomail/auth-core/lib/utils/cookie.js'
+import {toResponse} from '@mllomail/auth-core/lib/utils/web.js'
+import {parse} from '@mllomail/auth-cookie'
 import {context} from './context.mjs'
 
 // Reuse Auth.js cryptography, cookie rotation, CSRF and callbacks unchanged.
